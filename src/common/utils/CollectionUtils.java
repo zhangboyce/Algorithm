@@ -21,4 +21,12 @@ public abstract class CollectionUtils {
         return !isEmpty(ts);
     }
 
+    public static boolean isEmpty(Collection collection) {
+        return null == collection && collection.size() == 0;
+    }
+
+    public static boolean isNotEmpty(Collection collection) {
+        return !isEmpty(collection);
+    }
+
 }
