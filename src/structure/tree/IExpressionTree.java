@@ -6,7 +6,7 @@ import structure.stack.ILinkedStack;
 import structure.stack.IStack;
 
 /**
- * Created by boyce on 2014/8/3.
+ * Created by boyce on 2014/8/3.   
  */
 public class IExpressionTree {
 
