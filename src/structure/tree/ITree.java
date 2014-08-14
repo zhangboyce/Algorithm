@@ -27,11 +27,20 @@ public interface ITree<T extends Comparable> {
 
     public void display();
 
+    static interface INode<T extends Comparable> {
+        public T getElement();
+
+        public INode getRightNode();
+
+        public INode getLeftNode();
+
+    }
+
     /**
-     * tree node interface
+     * tree node
      * @param <T>
      */
-    static class Node<T extends Comparable> {
+    static class Node<T extends Comparable> implements INode<T> {
         protected T element;
         protected Node leftNode;
         protected Node rightNode;
@@ -71,5 +80,16 @@ public interface ITree<T extends Comparable> {
             return leftNode == null && rightNode != null;
         }
 
+        public T getElement() {
+            return element;
+        }
+
+        public Node getLeftNode() {
+            return leftNode;
+        }
+
+        public Node getRightNode() {
+            return rightNode;
+        }
     }
 }
