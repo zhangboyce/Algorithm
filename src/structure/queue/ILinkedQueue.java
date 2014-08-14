@@ -7,9 +7,9 @@ import common.exception.EmptyQueueException;
  */
 public class ILinkedQueue<T> implements IQueue<T> {
 
-    private int size;
-    private Node front;
-    private Node rear;
+    protected int size;
+    protected Node front;
+    protected Node rear;
 
     public ILinkedQueue() {
         this.front = new Node();
@@ -83,21 +83,21 @@ public class ILinkedQueue<T> implements IQueue<T> {
         return builder.append("]").toString();
     }
 
-    private static class Node<T> {
-        private Node next;
-        private Node prior;
-        private T data;
+    public static class Node<T> {
+        public Node next;
+        public Node prior;
+        public T data;
 
-        private Node(Node next, T data) {
+        protected Node(Node next, T data) {
             this.data = data;
             this.next = next;
         }
 
-        private Node(T data) {
+        protected Node(T data) {
             this(null, data);
         }
 
-        private Node() {
+        protected Node() {
             this(null, null);
         }
     }

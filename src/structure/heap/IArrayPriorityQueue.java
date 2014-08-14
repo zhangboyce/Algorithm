@@ -17,6 +17,7 @@ public class IArrayPriorityQueue<T extends Comparable>
     public void offer(T t) {
         super.offer(t);
 
+        //sort array to make the rear element is the minimum
         int i = this.rear - 1;
         for (; i != this.front; i --) {
             if (i < 0)
@@ -39,11 +40,11 @@ public class IArrayPriorityQueue<T extends Comparable>
         IPriorityQueue iPriorityQueue = new IArrayPriorityQueue();
         iPriorityQueue.offer(3);
         iPriorityQueue.offer(8);
-        iPriorityQueue.offer(9);
+        iPriorityQueue.offer(-1);
         iPriorityQueue.offer(5);
         iPriorityQueue.offer(2);
 
-        System.out.println(iPriorityQueue.peek());
+        System.out.println(iPriorityQueue.poll());
         System.out.println(iPriorityQueue);
     }
 }
