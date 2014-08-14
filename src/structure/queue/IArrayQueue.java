@@ -7,11 +7,11 @@ import common.exception.EmptyQueueException;
  */
 public class IArrayQueue<T> implements IQueue<T> {
 
-    private static final int DEFAULT_CAPACITY = 10;
+    protected static final int DEFAULT_CAPACITY = 10;
 
-    private Object[] data;
-    private int front;
-    private int rear;
+    protected Object[] data;
+    protected int front;
+    protected int rear;
 
     public IArrayQueue() {
         this(DEFAULT_CAPACITY);
