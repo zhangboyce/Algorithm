@@ -7,4 +7,5 @@ import structure.queue.IQueue;
  */
 public interface IPriorityQueue<T extends Comparable> extends IQueue<T> {
 
+    public void display();
 }
