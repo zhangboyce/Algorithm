@@ -1,6 +1,5 @@
 package structure.heap;
 
-import common.utils.ObjectUtils;
 import structure.tree.ITree;
 import structure.tree.TreePrinter;
 
@@ -17,7 +16,6 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
     public MinHeap() {
         this(DEFAULT_CAPACITY);
     }
-    
 
     public MinHeap(int capacity) {
         this.elements = (T[])new Comparable[capacity];
