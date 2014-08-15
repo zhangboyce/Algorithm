@@ -12,7 +12,6 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
 
     private int currentSize;
     private T[] elements;
-    
 
     public MinHeap() {
         this(DEFAULT_CAPACITY);
