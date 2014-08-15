@@ -91,5 +91,17 @@ public interface ITree<T extends Comparable> {
         public Node getRightNode() {
             return rightNode;
         }
+
+        public void setElement(T element) {
+            this.element = element;
+        }
+
+        public void setLeftNode(Node leftNode) {
+            this.leftNode = leftNode;
+        }
+
+        public void setRightNode(Node rightNode) {
+            this.rightNode = rightNode;
+        }
     }
 }

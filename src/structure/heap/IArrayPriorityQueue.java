@@ -36,6 +36,11 @@ public class IArrayPriorityQueue<T extends Comparable>
         }
     }
 
+    @Override
+    public void display() {
+        System.out.println(this.toString());
+    }
+
     public static void main(String[] args) {
         IPriorityQueue iPriorityQueue = new IArrayPriorityQueue();
         iPriorityQueue.offer(3);

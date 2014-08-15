@@ -52,6 +52,11 @@ public class ILinkedPriorityQueue<T extends Comparable>
         return min;
     }
 
+    @Override
+    public void display() {
+        System.out.println(this.toString());
+    }
+
     public static void main(String[] args) {
         IPriorityQueue iPriorityQueue = new ILinkedPriorityQueue();
         iPriorityQueue.offer(3);

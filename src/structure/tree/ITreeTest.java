@@ -35,8 +35,8 @@ public class ITreeTest {
         _7.rightNode = _8;
         _7.leftNode = _6;
 
-        IAbstractTree.BTreePrinter.printNode(_5);
-        IAbstractTree.BTreePrinter.printNode(iavlTree.rotateWithRightChild(_5));
+        TreePrinter.printNode(_5);
+        TreePrinter.printNode(iavlTree.rotateWithRightChild(_5));
 
         _5 = new ITree.Node(5);
         _6 = new ITree.Node(6);
@@ -47,8 +47,8 @@ public class ITreeTest {
         _6.rightNode = _7;
         _6.leftNode = _5;
 
-        IAbstractTree.BTreePrinter.printNode(_8);
-        IAbstractTree.BTreePrinter.printNode(iavlTree.rotateWithLeftChild(_8));
+        TreePrinter.printNode(_8);
+        TreePrinter.printNode(iavlTree.rotateWithLeftChild(_8));
 
         _5 = new ITree.Node(5);
         _6 = new ITree.Node(6);
@@ -59,8 +59,8 @@ public class ITreeTest {
         _8.leftNode = _7;
         //_7.leftNode = _6;
 
-        IAbstractTree.BTreePrinter.printNode(_5);
-        IAbstractTree.BTreePrinter.printNode(iavlTree.doubleWithRightChild(_5));
+        TreePrinter.printNode(_5);
+        TreePrinter.printNode(iavlTree.doubleWithRightChild(_5));
 
         _5 = new ITree.Node(5);
         _6 = new ITree.Node(6);
@@ -70,7 +70,7 @@ public class ITreeTest {
         _8.leftNode = _5;
         _5.rightNode = _7;
 
-        IAbstractTree.BTreePrinter.printNode(_8);
-        IAbstractTree.BTreePrinter.printNode(iavlTree.doubleWithLeftChild(_8));
+        TreePrinter.printNode(_8);
+        TreePrinter.printNode(iavlTree.doubleWithLeftChild(_8));
     }
 }
