@@ -10,7 +10,7 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
 
     private final static int DEFAULT_CAPACITY = 10;
 
-    private int currentSize; 
+    private int currentSize;
     private T[] elements;
 
     public MinHeap() {
@@ -128,7 +128,7 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
        if (this.isEmpty())
            return;
 
-        for (int i=currentSize-1; i>=0; i--)
+        for (int i=currentSize/2; i>=0; i--)
             this.trickleDown(i);
     }
 
