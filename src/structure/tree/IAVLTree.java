@@ -1,5 +1,7 @@
 package structure.tree;
 
+import common.utils.ObjectUtils;
+
 /**
  * Created by boyce on 2014/8/4.
  */
@@ -30,6 +32,8 @@ public class IAVLTree<T extends Comparable> extends IBinaryTree<T> {
         tree.remove(7);
 
         tree.display();
+
+        System.out.println(tree.validate());
     }
 
     /**
@@ -191,6 +195,47 @@ public class IAVLTree<T extends Comparable> extends IBinaryTree<T> {
         //将根节点的左节点进行一次单右旋转，再对根节点进行一次左旋转
         node.leftNode = this.rotateWithRightChild(node.leftNode);
         return this.rotateWithLeftChild(node);
+    }
+
+    /**
+     * O(nlgn)
+     * validate avl-tree node high and avl-tree balance
+     * @return
+     */
+    public boolean validate() {
+        return this.validate(root);
+    }
+
+    //validate  avl-tree node high and node balance
+    private boolean validate(Node node) {
+        if (ObjectUtils.isNull(node))
+            return -1 == this.height(node);
+
+        if (node.isLeaf())
+           return 0 == node.height;
+
+        else if (node.onlyLeftChild())
+            return
+                this.validate(node.leftNode) &&
+                node.height == node.leftNode.height + 1 &&
+                node.height < 2;
+
+        else if(node.onlyRightChild())
+            return
+                this.validate(node.rightNode) &&
+                node.height == node.rightNode.height + 1 &&
+                node.height < 2;
+
+        else {
+            int left = node.leftNode.height;
+            int right = node.rightNode.height;
+
+            return
+                this.validate(node.rightNode) &&
+                this.validate(node.leftNode) &&
+                node.height == (left > right ? left + 1 : right + 1) &&
+                Math.abs(node.rightNode.height - node.leftNode.height) < 2;
+        }
     }
 
 }

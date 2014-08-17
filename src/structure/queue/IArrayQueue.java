@@ -9,7 +9,7 @@ public class IArrayQueue<T> implements IQueue<T> {
 
     protected static final int DEFAULT_CAPACITY = 10;
 
-    protected Object[] data;
+    protected T[] data;
     protected int front;
     protected int rear;
 
@@ -18,7 +18,7 @@ public class IArrayQueue<T> implements IQueue<T> {
     }
 
     public IArrayQueue(int capacity) {
-        this.data = new Object[capacity];
+        this.data = (T[])new Object[capacity];
     }
 
     @Override
@@ -44,7 +44,7 @@ public class IArrayQueue<T> implements IQueue<T> {
         if (isEmpty())
             throw new EmptyQueueException();
 
-        return (T)data[front];
+        return data[front];
     }
 
     @Override
@@ -60,7 +60,7 @@ public class IArrayQueue<T> implements IQueue<T> {
     @Override
     public void clear() {
         this.front = this.rear = 0;
-        this.data = new Object[DEFAULT_CAPACITY];
+        this.data = (T[])new Object[DEFAULT_CAPACITY];
     }
 
     @Override
@@ -78,7 +78,7 @@ public class IArrayQueue<T> implements IQueue<T> {
     }
 
     private void ensureCapacity() {
-        Object[] newQueue = new Object[this.data.length * 2];
+        T[] newQueue = (T[])new Object[this.data.length * 2];
 
         for (int i=front; i != rear; i = (i+1) % data.length)
             newQueue[i] = this.data[i];
