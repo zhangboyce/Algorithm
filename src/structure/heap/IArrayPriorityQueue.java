@@ -7,15 +7,15 @@ import structure.queue.IArrayQueue;
  * Created by boyce on 2014/8/14.
  * priority queue implemented array
  */
-public class IArrayPriorityQueue<T extends Comparable>
-        extends IArrayQueue<T> implements IPriorityQueue<T> {
+public class IArrayPriorityQueue
+        extends IArrayQueue<Integer> implements IPriorityQueue {
 
     /**
      * sorted the array when offering evey time
      * @param t
      */
     @Override
-    public void offer(T t) {
+    public void offer(Integer t) {
         super.offer(t);
 
         //sort array to make the rear element is the minimum
@@ -23,7 +23,7 @@ public class IArrayPriorityQueue<T extends Comparable>
     }
 
     @Override
-    public void decrease(int i, T offset) {
+    public void decrease(int i, Integer offset) {
         if (this.rear < this.front &&
                 !((0<i && i <this.rear) || (this.front < i && i < this.data.length-1))) {
             throw new OutOfQueueException("the index out of queue, index: " + i);
@@ -37,7 +37,7 @@ public class IArrayPriorityQueue<T extends Comparable>
     }
 
     @Override
-    public void increase(int i, T offset) {
+    public void increase(int i, Integer offset) {
 
     }
 
@@ -57,7 +57,7 @@ public class IArrayPriorityQueue<T extends Comparable>
             if (i < 0)
                 i = this.data.length - 1;
 
-            T temp = (T)this.data[i];
+            Integer temp = this.data[i];
             int j;
             for (j = i-1; j>=0; j--) {
                 if(temp.compareTo(this.data[j]) < 0){
@@ -72,7 +72,7 @@ public class IArrayPriorityQueue<T extends Comparable>
 
     public static void main(String[] args) {
         IPriorityQueue iPriorityQueue = new IArrayPriorityQueue();
-        iPriorityQueue.offer(3);
+        iPriorityQueue.offer(9);
         iPriorityQueue.offer(8);
         iPriorityQueue.offer(-1);
         iPriorityQueue.offer(5);

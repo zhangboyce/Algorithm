@@ -6,22 +6,22 @@ import structure.tree.TreePrinter;
 /**
  * Created by boyce on 2014/8/14.
  */
-public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
+public class MinHeap implements IPriorityQueue {
 
     private final static int DEFAULT_CAPACITY = 10;
 
     private int currentSize;
-    private T[] elements;
+    private Integer[] elements;
 
     public MinHeap() {
         this(DEFAULT_CAPACITY);
     }
 
     public MinHeap(int capacity) {
-        this.elements = (T[])new Comparable[capacity];
+        this.elements = new Integer[capacity];
     }
 
-    public MinHeap(T[] elements) {
+    public MinHeap(Integer[] elements) {
         this.elements = elements;
         this.currentSize = this.elements.length;
 
@@ -29,7 +29,7 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
     }
 
     @Override
-    public void offer(T t) {
+    public void offer(Integer t) {
         if (currentSize == this.elements.length)
             this.enlargeCapacity(this.elements.length * 2);
 
@@ -38,8 +38,8 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
     }
 
     @Override
-    public T poll() {
-        T element = this.peek();
+    public Integer poll() {
+        Integer element = this.peek();
 
         //remove root element, and set the last element as root
         this.elements[0] = this.elements[currentSize-1];
@@ -52,7 +52,7 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
     }
 
     @Override
-    public T peek() {
+    public Integer peek() {
         return this.elements[0];
     }
 
@@ -68,7 +68,7 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
 
     @Override
     public void clear() {
-        this.elements = (T[])new Comparable[DEFAULT_CAPACITY];
+        this.elements = new Integer[DEFAULT_CAPACITY];
         this.currentSize = 0;
     }
 
@@ -77,9 +77,9 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
 
         // root cannot trickleUp
         if (i > 0) {
-            T element = this.elements[i];
+            Integer element = this.elements[i];
             int parent = this.parent(i);
-            T parentElement = this.elements[parent];
+            Integer parentElement = this.elements[parent];
 
             //if the element is less than it's parent, swap
             if (element.compareTo(parentElement) < 0) {
@@ -97,7 +97,7 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
         int left = this.leftChild(i);
         int right = this.rightChild(i);
 
-        T element = this.elements[i];
+        Integer element = this.elements[i];
 
         //left < current, at least exist left leftChild
         if (left < currentSize) {
@@ -105,7 +105,7 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
             if (right < currentSize && this.elements[right].compareTo(this.elements[left]) < 0
                     && element.compareTo(this.elements[right]) > 0) {
 
-                T temp = this.elements[i];
+                Integer temp = this.elements[i];
                 this.elements[i] = this.elements[right];
                 this.elements[right] = temp;
 
@@ -113,7 +113,7 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
             }
             else if (element.compareTo(this.elements[left]) > 0) {
 
-                T temp = this.elements[i];
+                Integer temp = this.elements[i];
                 this.elements[i] = this.elements[left];
                 this.elements[left] = temp;
 
@@ -149,7 +149,7 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
 
     //enlarge the capacity
     private void enlargeCapacity(int capacity) {
-        T[] newElements = (T[])new Comparable[capacity];
+        Integer[] newElements = new Integer[capacity];
         for (int i=0; i<this.elements.length; i++)
             newElements[i] = this.elements[i];
 
@@ -172,6 +172,21 @@ public class MinHeap<T extends Comparable> implements IPriorityQueue<T> {
             return node;
         }
         return null;
+    }
+
+    @Override
+    public void decrease(int i, Integer offset) {
+
+    }
+
+    @Override
+    public void increase(int i, Integer offset) {
+
+    }
+
+    @Override
+    public void delete(int i) {
+
     }
 
     public static void main(String[] args) {

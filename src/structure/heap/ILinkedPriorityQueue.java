@@ -7,40 +7,40 @@ import structure.queue.ILinkedQueue;
  * Created by boyce on 2014/8/14.
  * priority queue implemented linked list
  */
-public class ILinkedPriorityQueue<T extends Comparable>
-        extends ILinkedQueue<T> implements IPriorityQueue<T> {
+public class ILinkedPriorityQueue
+        extends ILinkedQueue<Integer> implements IPriorityQueue {
 
     /**
      * peek the minimum element
      * @return
      */
     @Override
-    public T peek() {
+    public Integer peek() {
         if (isEmpty())
             throw new EmptyQueueException();
 
         Node node = this.front.next;
-        T min = (T)node.data;
+        Integer min = (Integer)node.data;
         while ((node=node.next) != this.rear) {
 
-            if (((T) node.data).compareTo(min) < 0)
-                min = (T)node.data;
+            if (((Integer) node.data).compareTo(min) < 0)
+                min = (Integer)node.data;
         }
         return min;
     }
 
     @Override
-    public T poll() {
+    public Integer poll() {
         if (isEmpty())
             throw new EmptyQueueException();
 
         Node node = this.front.next;
         Node removed = node;
-        T min = (T)node.data;
+        Integer min = (Integer)node.data;
         while ((node=node.next) != this.rear) {
-            if (((T) node.data).compareTo(min) < 0) {
+            if (((Integer) node.data).compareTo(min) < 0) {
                 removed = node;
-                min = (T)node.data;
+                min = (Integer)node.data;
             }
         }
 
@@ -55,6 +55,21 @@ public class ILinkedPriorityQueue<T extends Comparable>
     @Override
     public void display() {
         System.out.println(this.toString());
+    }
+
+    @Override
+    public void decrease(int i, Integer offset) {
+
+    }
+
+    @Override
+    public void increase(int i, Integer offset) {
+
+    }
+
+    @Override
+    public void delete(int i) {
+
     }
 
     public static void main(String[] args) {
