@@ -34,6 +34,7 @@ public class IArrayPriorityQueue
         }
 
         this.data[i] = this.data[i] - offset;
+        this.sort();
     }
 
     @Override
@@ -51,6 +52,11 @@ public class IArrayPriorityQueue
         System.out.println(this.toString());
     }
 
+    /**
+     *
+     * @param start
+     * @param end
+     */
     private void sort(int start, int end) {
         int i = start;
         for (; i != end; i --) {
