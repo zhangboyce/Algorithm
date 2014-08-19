@@ -7,7 +7,7 @@ import structure.tree.TreePrinter;
  * Created by boyce on 2014/8/14.
  */
 public class MinHeapDynamicPriorityQueue
-        extends MinHeapPriorityQueue implements IDynamicPriorityQueue<Integer> {
+        extends MinHeapPriorityQueue<Integer> implements IDynamicPriorityQueue {
 
     public MinHeapDynamicPriorityQueue() {
     }

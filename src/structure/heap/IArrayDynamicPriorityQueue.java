@@ -7,7 +7,7 @@ import common.exception.OutOfQueueException;
  * priority queue implemented array
  */
 public class IArrayDynamicPriorityQueue
-        extends IArrayPriorityQueue implements IDynamicPriorityQueue<Integer> {
+        extends IArrayPriorityQueue<Integer> implements IDynamicPriorityQueue {
 
     @Override
     public void decrease(int i, Integer offset) {

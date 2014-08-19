@@ -8,7 +8,7 @@ import structure.queue.ILinkedQueue;
  * priority queue implemented linked list
  */
 public class ILinkedDynamicPriorityQueue
-        extends ILinkedPriorityQueue implements IDynamicPriorityQueue<Integer> {
+        extends ILinkedPriorityQueue<Integer> implements IDynamicPriorityQueue {
 
     @Override
     public void decrease(int i, Integer offset) {

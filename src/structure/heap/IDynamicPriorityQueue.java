@@ -5,7 +5,7 @@ import common.utils.ObjectUtils;
 /**
  * Created by boyce on 2014/8/19.
  */
-public interface IDynamicPriorityQueue<Integer> extends IPriorityQueue {
+public interface IDynamicPriorityQueue extends IPriorityQueue<Integer> {
 
 
     /**
