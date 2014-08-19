@@ -22,7 +22,6 @@ public class ILinkedPriorityQueue<T extends Comparable>
         Node node = this.front.next;
         T min = (T)node.data;
         while ((node=node.next) != this.rear) {
-
             if (((T) node.data).compareTo(min) < 0)
                 min = (T)node.data;
         }
@@ -44,12 +43,16 @@ public class ILinkedPriorityQueue<T extends Comparable>
             }
         }
 
-        removed.prior.next = removed.next;
-        removed.next.prior = removed.prior;
-
-        this.size --;
-
+        this.remove(removed);
         return min;
+    }
+
+    protected void remove(Node node) {
+        if (node == null) return;
+
+        node.prior.next = node.next;
+        node.next.prior = node.prior;
+        this.size --;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class ILinkedPriorityQueue<T extends Comparable>
 
     public static void main(String[] args) {
         IPriorityQueue iPriorityQueue = new ILinkedPriorityQueue();
-        iPriorityQueue.offer(3);
+        iPriorityQueue.offer(8);
         iPriorityQueue.offer(0);
         iPriorityQueue.offer(9);
         iPriorityQueue.offer(-1);

@@ -9,6 +9,17 @@ import structure.tree.TreePrinter;
 public class MinHeapDynamicPriorityQueue
         extends MinHeapPriorityQueue implements IDynamicPriorityQueue<Integer> {
 
+    public MinHeapDynamicPriorityQueue() {
+    }
+
+    public MinHeapDynamicPriorityQueue(int capacity) {
+        super(capacity);
+    }
+
+    public MinHeapDynamicPriorityQueue(Integer[] elements) {
+        super(elements);
+    }
+
     @Override
     public void decrease(int i, Integer offset) {
 
@@ -26,17 +37,17 @@ public class MinHeapDynamicPriorityQueue
 
     public static void main(String[] args) {
 
-//        Integer[] elements = {3, 4, 5, 1, 8, 9};
-//        IPriorityQueue iPriorityQueue = new MinHeapDynamicPriorityQueue(elements);
-//        iPriorityQueue.display();
-//
-//        iPriorityQueue.offer(6);
-//        iPriorityQueue.offer(0);
-//        iPriorityQueue.offer(7);
-//        iPriorityQueue.offer(2);
-//
-//        iPriorityQueue.display();
-//        iPriorityQueue.poll();
-//        iPriorityQueue.display();
+        Integer[] elements = {3, 4, 5, 1, 8, 9};
+        IPriorityQueue iPriorityQueue = new MinHeapDynamicPriorityQueue(elements);
+        iPriorityQueue.display();
+
+        iPriorityQueue.offer(6);
+        iPriorityQueue.offer(0);
+        iPriorityQueue.offer(7);
+        iPriorityQueue.offer(2);
+
+        iPriorityQueue.display();
+        iPriorityQueue.poll();
+        iPriorityQueue.display();
     }
 }

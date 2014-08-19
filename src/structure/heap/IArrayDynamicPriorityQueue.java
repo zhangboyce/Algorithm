@@ -16,7 +16,7 @@ public class IArrayDynamicPriorityQueue
             throw new OutOfQueueException("the index out of queue, index: " + i);
 
         this.data[i] = (Integer)this.data[i] - offset;
-        this.sort(i, this.rear-1);
+        this.sort(front, i+1);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class IArrayDynamicPriorityQueue
             throw new OutOfQueueException("the index out of queue, index: " + i);
 
         this.data[i] = (Integer)this.data[i] + offset;
-        this.sort(this.front, i);
+        this.sort(i, this.rear);
     }
 
     @Override
@@ -42,15 +42,25 @@ public class IArrayDynamicPriorityQueue
     }
 
     public static void main(String[] args) {
-        IPriorityQueue iPriorityQueue = new IArrayDynamicPriorityQueue();
+        IDynamicPriorityQueue iPriorityQueue = new IArrayDynamicPriorityQueue();
         iPriorityQueue.offer(9);
         iPriorityQueue.offer(8);
         iPriorityQueue.offer(-1);
         iPriorityQueue.offer(5);
         iPriorityQueue.offer(2);
 
-        System.out.println(iPriorityQueue.poll());
         System.out.println(iPriorityQueue);
+        iPriorityQueue.increase(0, 4);
+        System.out.println(iPriorityQueue);
+        iPriorityQueue.decrease(2, 5);
+        System.out.println(iPriorityQueue);
+        iPriorityQueue.decrease(4, 4);
+        System.out.println(iPriorityQueue);
+
+        iPriorityQueue.delete(2);
+        iPriorityQueue.delete(0);
+        System.out.println(iPriorityQueue);
+
     }
 
 }
