@@ -19,32 +19,39 @@ public class IArrayPriorityQueue
         super.offer(t);
 
         //sort array to make the rear element is the minimum
-        this.sort(this.rear - 1, this.front);
+        this.sort(this.front, this.rear - 1);
     }
 
     @Override
     public void decrease(int i, Integer offset) {
-        if (this.rear < this.front &&
-                !((0<i && i <this.rear) || (this.front < i && i < this.data.length-1))) {
+        int size1 = (rear - i + data.length)%data.length + (i - front + data.length)%data.length;
+        if (size1 != this.size())
             throw new OutOfQueueException("the index out of queue, index: " + i);
-        }
-
-        if (this.rear > this.front && !(i>=this.front && i<this.rear)) {
-            throw new OutOfQueueException("the index out of queue, index: " + i);
-        }
 
         this.data[i] = this.data[i] - offset;
-        this.sort();
+        this.sort(i, this.rear-1);
     }
 
     @Override
     public void increase(int i, Integer offset) {
+        int size1 = (rear - i + data.length)%data.length + (i - front + data.length)%data.length;
+        if (size1 != this.size())
+            throw new OutOfQueueException("the index out of queue, index: " + i);
 
+        this.data[i] = this.data[i] + offset;
+        this.sort(this.front, i);
     }
 
     @Override
     public void delete(int i) {
+        int size1 = (rear - i + data.length)%data.length + (i - front + data.length)%data.length;
+        if (size1 != this.size())
+            throw new OutOfQueueException("the index out of queue, index: " + i);
 
+        for (; i != this.rear; i++) {
+            this.data[i%this.data.length] = this.data[(i+1)%this.data.length];
+        }
+        this.rear = (this.rear + this.data.length - 1) % this.data.length;
     }
 
     @Override
@@ -53,13 +60,14 @@ public class IArrayPriorityQueue
     }
 
     /**
-     *
+     * sort the array index from start to end
      * @param start
      * @param end
      */
     private void sort(int start, int end) {
-        int i = start;
-        for (; i != end; i --) {
+        int i = end;
+        for (; i != start; i --) {
+            // if i<0 && i!=start, the rear < the front
             if (i < 0)
                 i = this.data.length - 1;
 
