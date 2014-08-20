@@ -1,6 +1,7 @@
-package structure.heap;
+package structure.queue.priority.dynamic;
 
 import common.exception.OutOfQueueException;
+import structure.queue.priority.IArrayPriorityQueue;
 
 /**
  * Created by boyce on 2014/8/14.

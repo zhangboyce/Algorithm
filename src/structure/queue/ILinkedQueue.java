@@ -52,6 +52,21 @@ public class ILinkedQueue<T> implements IQueue<T> {
     }
 
     @Override
+    public int index(T t) {
+        return 0;
+    }
+
+    @Override
+    public boolean contains(T t) {
+        return false;
+    }
+
+    @Override
+    public void addAll(IQueue<T> queue) {
+
+    }
+
+    @Override
     public int size() {
         return this.size;
     }

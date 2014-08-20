@@ -1,5 +1,6 @@
-package structure.heap;
+package structure.queue.priority;
 
+import structure.queue.IQueue;
 import structure.tree.ITree;
 import structure.tree.TreePrinter;
 
@@ -70,6 +71,21 @@ public class MinHeapPriorityQueue<T extends Comparable> implements IPriorityQueu
     public void clear() {
         this.elements = (T[])new Comparable[DEFAULT_CAPACITY];
         this.currentSize = 0;
+    }
+
+    @Override
+    public int index(T t) {
+        return 0;
+    }
+
+    @Override
+    public boolean contains(T t) {
+        return false;
+    }
+
+    @Override
+    public void addAll(IQueue<T> queue) {
+
     }
 
     //trickle up the element index i

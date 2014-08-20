@@ -48,6 +48,34 @@ public class IArrayQueue<T> implements IQueue<T> {
     }
 
     @Override
+    public int index(T t) {
+        if (this.isEmpty())
+            throw new EmptyQueueException();
+
+        if (null == t) return -1;
+
+        int index = -1;
+        for (int i=front; i!=rear; i++) {
+            i = (i + this.data.length) % this.data.length;
+            if (this.data[i].equals(t)) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    @Override
+    public boolean contains(T t) {
+        return false;
+    }
+
+    @Override
+    public void addAll(IQueue<T> queue) {
+
+    }
+
+    @Override
     public int size() {
         return (rear - front + data.length) % data.length;
     }

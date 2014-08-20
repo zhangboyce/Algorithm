@@ -1,4 +1,4 @@
-package structure.heap;
+package structure.queue.priority;
 
 import common.utils.ObjectUtils;
 import structure.queue.IQueue;

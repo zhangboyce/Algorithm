@@ -1,7 +1,8 @@
-package structure.heap;
+package structure.queue.priority.dynamic;
 
 import common.exception.EmptyQueueException;
 import structure.queue.ILinkedQueue;
+import structure.queue.priority.ILinkedPriorityQueue;
 
 /**
  * Created by boyce on 2014/8/14.

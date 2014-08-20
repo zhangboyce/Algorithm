@@ -1,5 +1,7 @@
-package structure.heap;
+package structure.queue.priority.dynamic;
 
+import structure.queue.priority.IPriorityQueue;
+import structure.queue.priority.MinHeapPriorityQueue;
 import structure.tree.ITree;
 import structure.tree.TreePrinter;
 

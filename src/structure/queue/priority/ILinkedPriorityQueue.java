@@ -1,7 +1,8 @@
-package structure.heap;
+package structure.queue.priority;
 
 import common.exception.EmptyQueueException;
 import structure.queue.ILinkedQueue;
+import structure.queue.IQueue;
 
 /**
  * Created by boyce on 2014/8/14.

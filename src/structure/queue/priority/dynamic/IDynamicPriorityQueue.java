@@ -1,6 +1,7 @@
-package structure.heap;
+package structure.queue.priority.dynamic;
 
 import common.utils.ObjectUtils;
+import structure.queue.priority.IPriorityQueue;
 
 /**
  * Created by boyce on 2014/8/19.

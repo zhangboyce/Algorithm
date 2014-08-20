@@ -18,4 +18,11 @@ public interface IQueue<T> {
     public boolean isEmpty() ;
 
     public void clear() ;
+
+    public int index(T t);
+
+    public boolean contains(T t);
+
+    public void addAll(IQueue<T> queue);
+
 }
