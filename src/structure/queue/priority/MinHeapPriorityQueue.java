@@ -9,10 +9,10 @@ import structure.tree.TreePrinter;
  */
 public class MinHeapPriorityQueue<T extends Comparable> implements IPriorityQueue<T> {
 
-    private final static int DEFAULT_CAPACITY = 10;
+    protected final static int DEFAULT_CAPACITY = 10;
 
-    private int currentSize;
-    private T[] elements;
+    protected int currentSize;
+    protected T[] elements;
 
     public MinHeapPriorityQueue() {
         this(DEFAULT_CAPACITY);
@@ -74,7 +74,7 @@ public class MinHeapPriorityQueue<T extends Comparable> implements IPriorityQueu
     }
 
     @Override
-    public int index(T t) {
+    public int indexOf(T t) {
         return 0;
     }
 
@@ -88,7 +88,7 @@ public class MinHeapPriorityQueue<T extends Comparable> implements IPriorityQueu
 
     }
 
-    //trickle up the element index i
+    //trickle up the element indexOf i
     private void trickleUp(int i) {
 
         // root cannot trickleUp
@@ -107,7 +107,7 @@ public class MinHeapPriorityQueue<T extends Comparable> implements IPriorityQueu
         }
     }
 
-    //trickle down the element index i
+    //trickle down the element indexOf i
     private void trickleDown(int i) {
 
         int left = this.leftChild(i);
@@ -140,7 +140,7 @@ public class MinHeapPriorityQueue<T extends Comparable> implements IPriorityQueu
     }
 
     //build heap
-    private void buildHeap() {
+    protected void buildHeap() {
        if (this.isEmpty())
            return;
 
@@ -148,17 +148,17 @@ public class MinHeapPriorityQueue<T extends Comparable> implements IPriorityQueu
             this.trickleDown(i);
     }
 
-    //if current node index is i, the left child index is 2*i + 1
+    //if current node indexOf is i, the left child indexOf is 2*i + 1
     private int leftChild(int i) {
         return (i << 1) + 1;
     }
 
-    //if current node index is i, the right child index is 2*i + 2
+    //if current node indexOf is i, the right child indexOf is 2*i + 2
     private int rightChild(int i) {
         return (i + 1) << 1;
     }
 
-    //if current node index is i, the parent node index is (i-1)/2
+    //if current node indexOf is i, the parent node indexOf is (i-1)/2
     private int parent(int i) {
         return (i - 1) >> 1;
     }

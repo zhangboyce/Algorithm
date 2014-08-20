@@ -21,13 +21,13 @@ public class IDCLinkedList<T> implements IList<T> {
     }
 
     /**
-     * get node index i-1
-     * @param i index
+     * get node indexOf i-1
+     * @param i indexOf
      * @return node object
      */
     private Node index(int i) {
         if (i < 0 || i > this.size)
-            throw new IllegalArgumentException("illegal index: " + i);
+            throw new IllegalArgumentException("illegal indexOf: " + i);
 
         Node p = null;
         if (i == 0)
@@ -51,8 +51,8 @@ public class IDCLinkedList<T> implements IList<T> {
     @Override
     public void insert(int i, T t) {
 
-        //i=0 return head, i=1 return head.next(index=0) and so on.
-        //So, actually, get the Node index i-1
+        //i=0 return head, i=1 return head.next(indexOf=0) and so on.
+        //So, actually, get the Node indexOf i-1
         Node p = this.index(i);
 
         Node n = new Node(t);

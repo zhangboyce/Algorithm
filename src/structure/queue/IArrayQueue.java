@@ -48,7 +48,7 @@ public class IArrayQueue<T> implements IQueue<T> {
     }
 
     @Override
-    public int index(T t) {
+    public int indexOf(T t) {
         if (this.isEmpty())
             throw new EmptyQueueException();
 
@@ -67,12 +67,16 @@ public class IArrayQueue<T> implements IQueue<T> {
 
     @Override
     public boolean contains(T t) {
-        return false;
+        return -1 != this.indexOf(t);
     }
 
     @Override
     public void addAll(IQueue<T> queue) {
+        if (null == queue || queue.isEmpty())
+            return;
 
+        while (!queue.isEmpty())
+            this.offer(queue.poll());
     }
 
     @Override
@@ -119,7 +123,7 @@ public class IArrayQueue<T> implements IQueue<T> {
     }
 
     public static void main(String[] args) {
-        IQueue queue = new IArrayQueue(2);
+        IQueue<String> queue = new IArrayQueue(2);
         queue.offer("1");
         queue.offer("2");
         queue.offer("3");
@@ -139,5 +143,19 @@ public class IArrayQueue<T> implements IQueue<T> {
         System.out.println(queue.peek());
         System.out.println(queue.poll());
         System.out.println(queue);
+
+        System.out.println(queue.indexOf("3"));
+        System.out.println(queue.indexOf("5"));
+        System.out.println(queue.indexOf("6"));
+        System.out.println(queue.indexOf("7"));
+
+        IQueue<String> queue2 = new IArrayQueue(2);
+        queue2.offer("a");
+        queue2.offer("b");
+        queue2.offer("c");
+
+        queue.addAll(queue2);
+        System.out.println(queue);
+        System.out.println(queue.peek());
     }
 }

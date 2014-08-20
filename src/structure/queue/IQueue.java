@@ -19,7 +19,7 @@ public interface IQueue<T> {
 
     public void clear() ;
 
-    public int index(T t);
+    public int indexOf(T t);
 
     public boolean contains(T t);
 

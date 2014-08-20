@@ -54,10 +54,10 @@ public class IDCLinkedList2<T>{
 
     public void exchange(int i, int j) {
         if (i < 0 || i >= size)
-            throw new IllegalArgumentException("Illegal index : " + i);
+            throw new IllegalArgumentException("Illegal indexOf : " + i);
 
         if (i < 0 || i >= size)
-            throw new IllegalArgumentException("Illegal index : " + i);
+            throw new IllegalArgumentException("Illegal indexOf : " + i);
 
         if (i == j) return;
 
@@ -90,7 +90,7 @@ public class IDCLinkedList2<T>{
      */
     private Node index(int i) {
         if (i < -1 || i > this.size)
-            throw new IllegalArgumentException("Illegal index : " + i);
+            throw new IllegalArgumentException("Illegal indexOf : " + i);
 
         if (i == -1)
             return this.head;

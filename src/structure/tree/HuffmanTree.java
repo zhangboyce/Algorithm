@@ -1,7 +1,8 @@
 package structure.tree;
 
-import structure.heap.IArrayPriorityQueue;
-import structure.heap.IPriorityQueue;
+
+import structure.queue.priority.IArrayPriorityQueue;
+import structure.queue.priority.IPriorityQueue;
 
 /**
  * Created by boyce on 2014/8/14.

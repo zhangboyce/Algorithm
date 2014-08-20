@@ -9,17 +9,21 @@ import structure.tree.TreePrinter;
  * Created by boyce on 2014/8/14.
  */
 public class MinHeapDynamicPriorityQueue
-        extends MinHeapPriorityQueue<Integer> implements IDynamicPriorityQueue {
+        extends MinHeapPriorityQueue<IDynamicPriorityQueue.DynamicPriorityQueueElement> implements IDynamicPriorityQueue {
 
     public MinHeapDynamicPriorityQueue() {
+        this(DEFAULT_CAPACITY);
     }
 
     public MinHeapDynamicPriorityQueue(int capacity) {
-        super(capacity);
+        this.elements = new DynamicPriorityQueueElement[capacity];
     }
 
-    public MinHeapDynamicPriorityQueue(Integer[] elements) {
-        super(elements);
+    public MinHeapDynamicPriorityQueue(DynamicPriorityQueueElement[] elements) {
+        this.elements = elements;
+        this.currentSize = this.elements.length;
+
+        this.buildHeap();
     }
 
     @Override
@@ -33,23 +37,26 @@ public class MinHeapDynamicPriorityQueue
     }
 
     @Override
-    public void delete(int i) {
+    public void remove(int i) {
 
+    }
+
+    @Override
+    public <T> void offer(T element, int priority) {
+        this.offer(new DynamicPriorityQueueElement(element, priority));
     }
 
     public static void main(String[] args) {
 
-        Integer[] elements = {3, 4, 5, 1, 8, 9};
-        IPriorityQueue iPriorityQueue = new MinHeapDynamicPriorityQueue(elements);
+        DynamicPriorityQueueElement[] elements = {
+                new DynamicPriorityQueueElement(3),
+                new DynamicPriorityQueueElement(4),
+                new DynamicPriorityQueueElement(5),
+                new DynamicPriorityQueueElement(1),
+                new DynamicPriorityQueueElement(8),
+                new DynamicPriorityQueueElement(9) };
+        IDynamicPriorityQueue iPriorityQueue = new MinHeapDynamicPriorityQueue(elements);
         iPriorityQueue.display();
 
-        iPriorityQueue.offer(6);
-        iPriorityQueue.offer(0);
-        iPriorityQueue.offer(7);
-        iPriorityQueue.offer(2);
-
-        iPriorityQueue.display();
-        iPriorityQueue.poll();
-        iPriorityQueue.display();
     }
 }

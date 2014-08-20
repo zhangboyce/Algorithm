@@ -52,18 +52,31 @@ public class ILinkedQueue<T> implements IQueue<T> {
     }
 
     @Override
-    public int index(T t) {
-        return 0;
+    public int indexOf(T t) {
+        Node p = this.front.next;
+        int j = 0;
+
+        while (p != null && !p.data.equals(t)) {
+            p = p.next;
+            j ++;
+        }
+
+        if (p != null) return j;
+        return -1;
     }
 
     @Override
     public boolean contains(T t) {
-        return false;
+        return -1 != this.indexOf(t);
     }
 
     @Override
     public void addAll(IQueue<T> queue) {
+        if (null == queue || queue.isEmpty())
+            return;
 
+        while (!queue.isEmpty())
+            this.offer(queue.poll());
     }
 
     @Override
@@ -137,5 +150,8 @@ public class ILinkedQueue<T> implements IQueue<T> {
         System.out.println(queue.peek());
         System.out.println(queue.poll());
         System.out.println(queue);
+        System.out.println(queue.indexOf("4"));
+        System.out.println(queue.indexOf("6"));
+        System.out.println(queue.indexOf("3"));
     }
 }

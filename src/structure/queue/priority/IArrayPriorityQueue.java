@@ -35,7 +35,7 @@ public class IArrayPriorityQueue<T extends Comparable>
     }
 
     /**
-     * sort the array index from start to end
+     * sort the array indexOf from start to end
      * @param start
      * @param end
      */

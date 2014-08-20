@@ -12,21 +12,21 @@ public interface IList<T> extends IIterable {
     public int size();
 
     /**
-     * Insert a element into list at index i
+     * Insert a element into list at indexOf i
      * @param i the element insert position
      * @param t the inserted element
      */
     public void insert(int i, T t);
 
     /**
-     * Add a element in list last index
+     * Add a element in list last indexOf
      * @param t added element
      */
     public void add(T t);
 
     /**
-     * Remove a element at index i
-     * @param i the removed element index
+     * Remove a element at indexOf i
+     * @param i the removed element indexOf
      * @return the removed element object
      */
     public T remove(int i);
@@ -45,16 +45,16 @@ public interface IList<T> extends IIterable {
     public boolean isEmpty();
 
     /**
-     * Get a element at index i from list
-     * @param i the got element index
+     * Get a element at indexOf i from list
+     * @param i the got element indexOf
      * @return the got element
      */
     public T get(int i);
 
     /**
-     * Return the element index in list if it equals t
+     * Return the element indexOf in list if it equals t
      * @param t t
-     * @return the index of t in the list
+     * @return the indexOf of t in the list
      */
     public int indexOf(T t);
 

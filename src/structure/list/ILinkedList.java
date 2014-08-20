@@ -18,12 +18,12 @@ public class ILinkedList<T> implements IList<T> {
     }
 
     /**
-     * Get index i-1:
-     * i=0 return head, i=1, return head.next(index=0)
+     * Get indexOf i-1:
+     * i=0 return head, i=1, return head.next(indexOf=0)
      */
     private Node index(int i) {
         if (i < 0 || i > this.size)
-            throw new IllegalArgumentException("Illegal index, " + i);
+            throw new IllegalArgumentException("Illegal indexOf, " + i);
 
         Node p = head;
         int j = 0;

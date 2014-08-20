@@ -33,7 +33,7 @@ public class IArrayList<T> implements IList<T> {
     @Override
     public void insert(int i, T t) {
         if (i < 0 || i > this.size)
-            throw new IllegalArgumentException("Illegal insert index, " + i);
+            throw new IllegalArgumentException("Illegal insert indexOf, " + i);
 
         if(this.beFull())
             this.ensureCapacity();
@@ -53,7 +53,7 @@ public class IArrayList<T> implements IList<T> {
     @Override
     public T remove(int i) {
         if (i < 0 || i > this.size-1)
-            throw new IllegalArgumentException("Illegal remove index, " + i);
+            throw new IllegalArgumentException("Illegal remove indexOf, " + i);
 
         if (this.size == 0)
            return null;
@@ -90,7 +90,7 @@ public class IArrayList<T> implements IList<T> {
     @Override
     public T get(int i) {
         if (i < 0 || i > this.size-1)
-            throw new IllegalArgumentException("Illegal get index, " + i);
+            throw new IllegalArgumentException("Illegal get indexOf, " + i);
 
         return (T)this.elements[i];
     }
