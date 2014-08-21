@@ -144,7 +144,8 @@ public class IArrayList<T> implements IList<T> {
         for (int i=0; i<this.size; i++)
             builder.append(this.elements[i].toString()).append(", ");
 
-        builder.delete(builder.length()-2, builder.length());
+        if (builder.length() > 3)
+            builder.delete(builder.length()-2, builder.length());
         builder.append("]");
 
         return builder.toString();
