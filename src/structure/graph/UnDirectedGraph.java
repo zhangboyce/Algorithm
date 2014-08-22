@@ -1,0 +1,43 @@
+package structure.graph;
+
+/**
+ * Created by boyce on 2014/8/22.
+ */
+public class UnDirectedGraph<T> extends AbstractGraph<T> {
+
+    @Override
+    public void addEdge(T element1, T element2) {
+        this.addVertex(element1);
+        this.addVertex(element2);
+
+        this.vertexs.get(element1).addAdjVertex(element2);
+        this.vertexs.get(element2).addAdjVertex(element1);
+    }
+
+    public static void main(String[] args) {
+        AbstractGraph<Integer> graph = new UnDirectedGraph<Integer>();
+        graph.addVertex(1);
+        graph.addVertex(2);
+        graph.addVertex(3);
+
+        graph.addEdge(1, 2);
+        graph.addEdge(1, 3);
+        graph.addEdge(1, 4);
+
+        graph.addEdge(2, 4);
+        graph.addEdge(2, 5);
+
+        graph.addEdge(3, 6);
+
+        graph.addEdge(4, 3);
+        graph.addEdge(4, 6);
+        graph.addEdge(4, 7);
+
+        graph.addEdge(5, 4);
+        graph.addEdge(5, 7);
+
+        graph.addEdge(7, 6);
+
+        System.out.println(graph);
+    }
+}
