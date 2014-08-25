@@ -1,5 +1,8 @@
 package structure.graph;
 
+import java.util.Collection;
+import java.util.Set;
+
 /**
  * Created by boyce on 2014/8/22.
  */
@@ -11,6 +14,12 @@ public class DirectedGraph<T> extends AbstractGraph<T> {
         this.addVertex(element2);
 
         this.vertexs.get(element1).addAdjVertex(element2);
+        this.vertexs.get(element2).inDegree ++;
+    }
+
+    public void topSort() {
+        Collection<Vertex<T>> vertexSet = this.vertexs.values();
+
     }
 
     public static void main(String[] args) {

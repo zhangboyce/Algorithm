@@ -12,6 +12,8 @@ public class UnDirectedGraph<T> extends AbstractGraph<T> {
 
         this.vertexs.get(element1).addAdjVertex(element2);
         this.vertexs.get(element2).addAdjVertex(element1);
+        this.vertexs.get(element2).inDegree ++;
+        this.vertexs.get(element1).inDegree ++;
     }
 
     public static void main(String[] args) {

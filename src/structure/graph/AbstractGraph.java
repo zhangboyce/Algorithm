@@ -38,11 +38,14 @@ public abstract class AbstractGraph<T> implements IGraph<T> {
      */
     protected static class Vertex<T> {
         //vertex data
-        private T element;
+        protected T element;
         //this vertex's adjacent vertexs list
-        private IList<Vertex<T>> adjVertexs;
+        protected IList<Vertex<T>> adjVertexs;
 
-        private Vertex(T element) {
+        //vertex's in-degree
+        protected int inDegree;
+
+        protected Vertex(T element) {
             this.element = element;
             this.adjVertexs = new IGraphArrayList<Vertex<T>>();
         }
