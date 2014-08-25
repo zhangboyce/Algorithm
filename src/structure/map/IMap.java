@@ -14,25 +14,17 @@ public interface IMap<K, V> {
 
     boolean isEmpty();
 
-    boolean containsKey(Object key);
+    boolean containsKey(K key);
 
-    boolean containsValue(Object value);
+    boolean containsValue(V value);
 
-    V get(Object key);
+    V get(K key);
 
-    V put(K key, V value);
+    void put(K key, V value);
 
-    V remove(Object key);
-
-    void putAll(Map<? extends K, ? extends V> m);
+    void remove(K key);
 
     void clear();
-
-    Set<K> keySet();
-
-    Collection<V> values();
-
-    Set<IMap.IEntry<K, V>> entrySet();
 
     /**
      *  entry
