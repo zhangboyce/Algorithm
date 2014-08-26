@@ -9,12 +9,9 @@ import java.util.*;
  */
 public class IHashMap<K, V> extends IAbstractMap<K, V> {
 
-    protected int size;
     protected MapEntry<K, V>[] entries;
-    protected float loadFactor;
 
     private final static int DEFAULT_CAPACITY =  16 ;
-    private static final int MAXIMUM_CAPACITY = 1 << 30;
     private final static float DEFAULT_LOAD_FACTOR = 0.75f;
 
     public IHashMap() {
@@ -29,29 +26,16 @@ public class IHashMap<K, V> extends IAbstractMap<K, V> {
         if (initialCapacity < 0)
             throw new IllegalArgumentException("Illegal initial capacity: " +
                     initialCapacity);
-        if (initialCapacity > MAXIMUM_CAPACITY)
-            initialCapacity = MAXIMUM_CAPACITY;
         if (loadFactor <= 0 || Float.isNaN(loadFactor))
             throw new IllegalArgumentException("Illegal load factor: " +
                     loadFactor);
 
-        // Find a power of 2 >= initialCapacity
         int capacity = 1;
         while (capacity < initialCapacity)
             capacity <<= 1;
 
         this.loadFactor = loadFactor;
         entries = new MapEntry[capacity];
-    }
-
-    @Override
-    public int size() {
-        return this.size;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return this.size == 0;
     }
 
     @Override
@@ -101,7 +85,7 @@ public class IHashMap<K, V> extends IAbstractMap<K, V> {
         if (key == null || value == null)
             return;
 
-        if (this.size >= this.entries.length * this.loadFactor);
+        if (this.size >= this.entries.length * this.loadFactor)
             this.resize(this.entries.length << 1);
 
         int hashCode = key.hashCode();
@@ -192,7 +176,6 @@ public class IHashMap<K, V> extends IAbstractMap<K, V> {
     private abstract class MapIterator<E> implements IIterator<E> {
         MapEntry<K,V> next;
         int index;
-        MapEntry<K,V> current;
 
         MapIterator() {
             if (IHashMap.this.size > 0) {
@@ -214,13 +197,12 @@ public class IHashMap<K, V> extends IAbstractMap<K, V> {
             if (e == null)
                 throw new NoSuchElementException();
 
+            //if current entry list is end, find next element from array
             if ((next = e.next) == null) {
                 MapEntry[] t = entries;
-                //find next element from array
                 while (index < t.length && (next = t[index++]) == null)
                     ;
             }
-            current = e;
             return e;
         }
 
@@ -295,11 +277,6 @@ public class IHashMap<K, V> extends IAbstractMap<K, V> {
     // resize
     private void resize(int newCapacity) {
         MapEntry[] oldTable = entries;
-        int oldCapacity = oldTable.length;
-        if (oldCapacity == MAXIMUM_CAPACITY) {
-            return;
-        }
-
         MapEntry[] newTable = new MapEntry[newCapacity];
         for (MapEntry<K,V> e : oldTable) {
             while(null != e) {

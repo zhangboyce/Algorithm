@@ -10,12 +10,9 @@ import java.util.NoSuchElementException;
  */
 public class IHashTable<K, V> extends IAbstractMap<K, V> {
 
-    protected int size;
     protected TableEntry<K, V>[] entries;
-    protected float loadFactor;
 
     private final static int DEFAULT_CAPACITY =  16 ;
-    private static final int MAXIMUM_CAPACITY = 1 << 30;
     private final static float DEFAULT_LOAD_FACTOR = 0.5f;
 
     public IHashTable() {
@@ -30,13 +27,10 @@ public class IHashTable<K, V> extends IAbstractMap<K, V> {
         if (initialCapacity < 0)
             throw new IllegalArgumentException("Illegal initial capacity: " +
                     initialCapacity);
-        if (initialCapacity > MAXIMUM_CAPACITY)
-            initialCapacity = MAXIMUM_CAPACITY;
         if (loadFactor <= 0 || Float.isNaN(loadFactor))
             throw new IllegalArgumentException("Illegal load factor: " +
                     loadFactor);
 
-        // Find a power of 2 >= initialCapacity
         int capacity = 1;
         while (capacity < initialCapacity)
             capacity <<= 1;
@@ -46,50 +40,28 @@ public class IHashTable<K, V> extends IAbstractMap<K, V> {
     }
 
     @Override
-    public int size() {
-        return this.size;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return this.size == 0;
-    }
-
-    @Override
     public boolean containsKey(K key) {
-        if (null == key) return false;
-
-        int hashCode = key.hashCode();
-        int index = this.indexFor(hashCode, entries.length);
-        TableEntry entry = this.entries[index];
-
-        return entry != null;
+        return this.isActive(this.findIndex(key, entries));
     }
 
     @Override
     public boolean containsValue(V value) {
-        if (null == value) return false;
+        IIterator<TableEntry<K,V>> iIterator = new EntryIterator();
 
-        for (TableEntry entry: entries) {
-            for (; entry != null; entry = entry.next)
-                if (entry.getValue().equals(value))
-                    return true;
+        TableEntry<K,V> entry = null;
+        while (iIterator.hasNext()) {
+            entry = iIterator.next();
+            if (entry.isActive() && entry.getValue().equals(value))
+                return true;
         }
         return false;
     }
 
     @Override
     public V get(K key) {
-        if (null == key) return null;
-
-        int hashCode = key.hashCode();
-        int index = this.indexFor(hashCode, entries.length);
-        TableEntry entry = entries[index];
-
-        if (null == entry) return null;
-        for (; entry != null; entry = entry.next)
-            if (entry.getKey().equals(key))
-                return (V)entry.getValue();
+        int index = this.findIndex(key, entries);
+        if (this.isActive(index))
+            return this.entries[index].getValue();
 
         return null;
     }
@@ -99,20 +71,12 @@ public class IHashTable<K, V> extends IAbstractMap<K, V> {
         if (key == null || value == null)
             return;
 
-        if (this.size >= this.entries.length * this.loadFactor);
+        if (this.size >= this.entries.length * this.loadFactor)
             this.resize(this.entries.length << 1);
 
-        int hashCode = key.hashCode();
-        int i = this.indexFor(hashCode, entries.length);
+        int index = this.findIndex(key, entries);
+        this.entries[index] = new TableEntry(key.hashCode(), key, value);
 
-        for(TableEntry e = this.entries[i]; e!= null; e = e.next) {
-            if (e.getKey().equals(key)) {
-                e.value = value;
-                return;
-            }
-        }
-
-        this.entries[i] = new TableEntry(hashCode, key, value, this.entries[i]);
         this.size ++;
 
     }
@@ -121,22 +85,10 @@ public class IHashTable<K, V> extends IAbstractMap<K, V> {
     public void remove(K key) {
         if (null == key) return;
 
-        int hashCode = key.hashCode();
-        int i = this.indexFor(hashCode, this.entries.length);
-
-        TableEntry e = this.entries[i];
-        TableEntry prev = e;
-        while(null != e) {
-            TableEntry<K,V> next = e.next;
-            if (e.getKey().equals(key)) {
-                this.size --;
-                if (prev == e)
-                    entries[i] = next;
-                else
-                    prev.next = next;
-            }
-            prev = e;
-            e = next;
+        int index = this.findIndex(key, entries);
+        if (this.isActive(index)) {
+            this.entries[index].setActive(false);
+            this.size -- ;
         }
     }
 
@@ -147,23 +99,23 @@ public class IHashTable<K, V> extends IAbstractMap<K, V> {
     }
 
     public String toString() {
-        IIterator<IEntry<K,V>> i = new EntryIterator();
-        if (! i.hasNext())
+        if (this.isEmpty())
             return "{}";
 
         StringBuilder sb = new StringBuilder();
         sb.append('{');
-        for (;;) {
-            IEntry<K,V> e = i.next();
-            K key = e.getKey();
-            V value = e.getValue();
-            sb.append(key   == this ? "(this Map)" : key);
-            sb.append('=');
-            sb.append(value == this ? "(this Map)" : value);
-            if (! i.hasNext())
-                return sb.append('}').toString();
-            sb.append(',').append(' ');
-        }
+        for (int i=0; i<this.entries.length; i++)
+            if (this.isActive(this.entries[i])) {
+                sb.append(this.entries[i].key);
+                sb.append('=');
+                sb.append(this.entries[i].value);
+
+                sb.append(',').append(' ');
+            }
+
+
+        sb.delete(sb.length()-2, sb.length());
+        return sb.append('}').toString();
     }
 
     private final class ValueIterator extends TableIterator<V> {
@@ -178,8 +130,8 @@ public class IHashTable<K, V> extends IAbstractMap<K, V> {
         }
     }
 
-    private final class EntryIterator extends TableIterator<IEntry<K,V>> {
-        public IEntry<K,V> next() {
+    private final class EntryIterator extends TableIterator<TableEntry<K,V>> {
+        public TableEntry<K,V> next() {
             return nextEntry();
         }
     }
@@ -190,35 +142,29 @@ public class IHashTable<K, V> extends IAbstractMap<K, V> {
     private abstract class TableIterator<E> implements IIterator<E> {
         TableEntry<K,V> next;
         int index;
-        TableEntry<K,V> current;
 
         TableIterator() {
             if (IHashTable.this.size > 0) {
-                TableEntry[] t = entries;
-
                 //find the first element in array
-                while (index < t.length && (next = t[index++]) == null)
+                while (index < entries.length && !IHashTable.this.isActive(next = entries[index++]))
                     ;
             }
         }
 
         @Override
         public boolean hasNext() {
-            return next != null;
+            return IHashTable.this.isActive(next);
         }
 
         public TableEntry<K, V> nextEntry() {
             TableEntry<K,V> e = next;
-            if (e == null)
+            if (!hasNext())
                 throw new NoSuchElementException();
 
-            if ((next = e.next) == null) {
-                TableEntry[] t = entries;
-                //find next element from array
-                while (index < t.length && (next = t[index++]) == null)
-                    ;
-            }
-            current = e;
+            // modify next element
+            while (index < entries.length && !IHashTable.this.isActive(next = entries[index++]))
+                ;
+
             return e;
         }
 
@@ -292,46 +238,69 @@ public class IHashTable<K, V> extends IAbstractMap<K, V> {
 
     }
 
-    // return index through hash code
-    private int indexFor(int h, int length) {
-        return h & (length - 1);
+    // f(i)=i*i  <---> f(i)=(i-1)*(i-1) + 2*i - 1 = f(i-1) + 2*i - 1
+    private int findIndex(K key, TableEntry[] entries) {
+        if (key == null) return -1;
+
+        int hashCode = key.hashCode();
+        int currentPos = hashCode & (entries.length - 1);
+
+        int offset = 1;
+        //current slot is not null or current slot element key not equals key,
+        //continue find the next position
+        while (entries[currentPos] != null &&
+                !entries[currentPos].getKey().equals(key)) {
+
+            currentPos += offset;
+            offset += 2;
+
+            if (currentPos >= entries.length)
+                currentPos -= entries.length;
+        }
+        return currentPos;
+    }
+
+    private boolean isActive(int index) {
+        if (index < 0 || index >= this.entries.length)
+            return false;
+
+        return this.isActive(this.entries[index]);
+    }
+
+    private boolean isActive(TableEntry entry) {
+        return null != entry && entry.isActive();
     }
 
     // resize
     private void resize(int newCapacity) {
-        TableEntry[] oldTable = entries;
-        int oldCapacity = oldTable.length;
-        if (oldCapacity == MAXIMUM_CAPACITY) {
-            return;
-        }
+        TableEntry[] oldEntries = this.entries;
+        this.entries = new TableEntry[newCapacity];
+        this.size = 0;
 
-        TableEntry[] newTable = new TableEntry[newCapacity];
-        for (TableEntry<K,V> e : oldTable) {
-            while(null != e) {
-                TableEntry<K,V> next = e.next;
-                int i = indexFor(e.hash, newCapacity);
-                e.next = newTable[i];
-                newTable[i] = e;
-                e = next;
-            }
-        }
-
-        entries = newTable;
+        for (int i=0; i<oldEntries.length; i++)
+            if (this.isActive(oldEntries[i]))
+                this.put((K)oldEntries[i].key, (V)oldEntries[i].value);
     }
 
     public static void main(String[] args) {
-        IMap<String, String> map = new IHashTable<String, String>();
-        map.put("1", "a");
-        map.put("2", "b");
-        map.put("3", "c");
-        map.put("4", "d");
+        IMap<String, String> map = new IHashTable<String, String>(4);
+        map.put("one", "1");
+        map.put("two", "2");
+        map.put("three", "3");
+        map.put("four", "4");
+        map.put("five", "5");
+        map.put("six", "6");
+        map.put("seven", "7");
+        map.put("eight", "8");
+        map.put("nine", "9");
+        map.put("ten", "10");
 
         System.out.println(map);
 
-        map.put("4", "f");
+        map.put("seven", "七");
         System.out.println(map);
 
-        map.remove("4");
+        map.remove("ten");
         System.out.println(map);
     }
 }
