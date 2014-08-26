@@ -3,7 +3,7 @@ package structure.list;
 /**
  * Created by boyce on 2014/7/6.
  */
-public interface IList<T> extends IIterable {
+public interface IList<T> extends Iterable<T> {
 
     /**
      * Get the list elements number

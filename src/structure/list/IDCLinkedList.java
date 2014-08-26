@@ -1,5 +1,7 @@
 package structure.list;
 
+import java.util.Iterator;
+
 /**
  * Created by boyce on 2014/7/6.
  */
@@ -126,11 +128,11 @@ public class IDCLinkedList<T> implements IList<T> {
     }
 
     @Override
-    public IIterator iterator() {
+    public Iterator iterator() {
         return new IDCLinkedListIterator();
     }
 
-    private class IDCLinkedListIterator<T> implements IIterator<T> {
+    private class IDCLinkedListIterator<T> implements Iterator<T> {
 
         private int current;
 

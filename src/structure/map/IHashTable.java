@@ -1,8 +1,6 @@
 package structure.map;
 
-import structure.list.IIterator;
-
-import java.util.Map;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -46,7 +44,7 @@ public class IHashTable<K, V> extends IAbstractMap<K, V> {
 
     @Override
     public boolean containsValue(V value) {
-        IIterator<TableEntry<K,V>> iIterator = new EntryIterator();
+        Iterator<TableEntry<K,V>> iIterator = new EntryIterator();
 
         TableEntry<K,V> entry = null;
         while (iIterator.hasNext()) {
@@ -139,7 +137,7 @@ public class IHashTable<K, V> extends IAbstractMap<K, V> {
     /**
      * abstract hash iterator
      */
-    private abstract class TableIterator<E> implements IIterator<E> {
+    private abstract class TableIterator<E> implements Iterator<E> {
         TableEntry<K,V> next;
         int index;
 

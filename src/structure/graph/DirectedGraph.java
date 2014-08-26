@@ -1,5 +1,10 @@
 package structure.graph;
 
+import structure.list.IArrayList;
+import structure.list.IList;
+import structure.queue.ILinkedQueue;
+import structure.queue.IQueue;
+
 import java.util.Collection;
 import java.util.Set;
 
@@ -14,16 +19,35 @@ public class DirectedGraph<T> extends AbstractGraph<T> {
         this.addVertex(element2);
 
         this.vertexs.get(element1).addAdjVertex(element2);
-        this.vertexs.get(element2).inDegree ++;
     }
 
-    public void topSort() {
+    public IList<Vertex<T>> topSort() {
         Collection<Vertex<T>> vertexSet = this.vertexs.values();
+        IQueue<Vertex<T>> queue = new ILinkedQueue<Vertex<T>>();
 
+        for (Vertex vertex: vertexSet)
+            if (vertex.inDegree == 0) {
+                queue.offer(vertex);
+                break;
+            }
+
+        IList<Vertex<T>> topList = new IArrayList<Vertex<T>>();
+        while(!queue.isEmpty()) {
+            Vertex vertex = queue.poll();
+            topList.add(vertex);
+
+            IList<Vertex<T>> adjs = vertex.adjVertexs;
+            for (Vertex<T> adj: adjs)
+                if (-- adj.inDegree == 0) {
+                    queue.offer(adj);
+                }
+        }
+
+        return topList;
     }
 
     public static void main(String[] args) {
-        AbstractGraph<Integer> graph = new DirectedGraph<Integer>();
+        DirectedGraph<Integer> graph = new DirectedGraph<Integer>();
         graph.addVertex(1);
         graph.addVertex(2);
         graph.addVertex(3);
@@ -47,5 +71,7 @@ public class DirectedGraph<T> extends AbstractGraph<T> {
         graph.addEdge(7, 6);
 
         System.out.println(graph);
+
+        System.out.println(graph.topSort());
     }
 }

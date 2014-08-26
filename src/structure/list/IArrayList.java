@@ -1,7 +1,6 @@
 package structure.list;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Iterator;
 
 /**
  * Created by boyce on 2014/7/6.
@@ -113,11 +112,11 @@ public class IArrayList<T> implements IList<T> {
     }
 
     @Override
-    public IIterator iterator() {
+    public Iterator iterator() {
         return new IArrayListIterator();
     }
 
-    private class IArrayListIterator<T> implements IIterator<T> {
+    private class IArrayListIterator<T> implements Iterator<T> {
 
         private int current;
 

@@ -1,7 +1,5 @@
 package structure.map;
 
-import structure.list.IIterator;
-
 import java.util.*;
 
 /**
@@ -133,7 +131,7 @@ public class IHashMap<K, V> extends IAbstractMap<K, V> {
     }
 
     public String toString() {
-        IIterator<IHashMap.IEntry<K,V>> i = new EntryIterator();
+        Iterator<IEntry<K,V>> i = new EntryIterator();
         if (! i.hasNext())
             return "{}";
 
@@ -173,7 +171,7 @@ public class IHashMap<K, V> extends IAbstractMap<K, V> {
     /**
      * abstract hash iterator
      */
-    private abstract class MapIterator<E> implements IIterator<E> {
+    private abstract class MapIterator<E> implements Iterator<E> {
         MapEntry<K,V> next;
         int index;
 

@@ -36,7 +36,7 @@ public abstract class AbstractGraph<T> implements IGraph<T> {
      * Graph vertex
      * @param <T>
      */
-    protected static class Vertex<T> {
+    protected class Vertex<T> {
         //vertex data
         protected T element;
         //this vertex's adjacent vertexs list
@@ -51,8 +51,18 @@ public abstract class AbstractGraph<T> implements IGraph<T> {
         }
 
         public void addAdjVertex(T element) {
-            Vertex vertex = new Vertex(element);
+            if (null == element)
+                return;
 
+            Vertex<T> vertex;
+            if (AbstractGraph.this.vertexs.containsKey(element)) {
+                vertex = (Vertex<T>) AbstractGraph.this.vertexs.get(element);
+            }
+            else {
+                throw new IllegalArgumentException("");
+            }
+
+            vertex.inDegree += 1;
             this.adjVertexs.add(vertex);
         }
 
