@@ -1,15 +1,12 @@
 package structure.queue.priority.dynamic;
 
-import structure.queue.priority.IPriorityQueue;
-import structure.queue.priority.MinHeapPriorityQueue;
-import structure.tree.ITree;
-import structure.tree.TreePrinter;
+import structure.queue.priority.BinaryHeap;
 
 /**
  * Created by boyce on 2014/8/14.
  */
 public class MinHeapDynamicPriorityQueue
-        extends MinHeapPriorityQueue<IDynamicPriorityQueue.DynamicPriorityQueueElement> implements IDynamicPriorityQueue {
+        extends BinaryHeap<IDynamicPriorityQueue.DynamicPriorityQueueElement> implements IDynamicPriorityQueue {
 
     public MinHeapDynamicPriorityQueue() {
         this(DEFAULT_CAPACITY);
