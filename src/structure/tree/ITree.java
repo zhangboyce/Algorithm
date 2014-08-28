@@ -42,8 +42,8 @@ public interface ITree<T extends Comparable> {
      */
     static class Node<T extends Comparable> implements INode<T> {
         protected T element;
-        protected Node leftNode;
-        protected Node rightNode;
+        protected Node<T> leftNode;
+        protected Node<T> rightNode;
         protected int height;
 
         public Node(T element, Node leftNode, Node rightNode) {
@@ -84,11 +84,11 @@ public interface ITree<T extends Comparable> {
             return element;
         }
 
-        public Node getLeftNode() {
+        public Node<T> getLeftNode() {
             return leftNode;
         }
 
-        public Node getRightNode() {
+        public Node<T> getRightNode() {
             return rightNode;
         }
 

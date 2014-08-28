@@ -38,6 +38,8 @@ public class LeftistHeap<T extends Comparable> implements IPriorityQueue<T> {
 
         T element = this.peek();
         this.root = this.merge(this.root.rightNode, this.root.leftNode);
+        this.size --;
+
         return element;
     }
 

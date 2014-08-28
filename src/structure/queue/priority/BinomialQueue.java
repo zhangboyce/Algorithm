@@ -1,6 +1,7 @@
 package structure.queue.priority;
 
 import structure.queue.IQueue;
+import structure.tree.ITree;
 
 /**
  * Created by boyce on 2014/8/27.
@@ -54,6 +55,36 @@ public class BinomialQueue<T extends Comparable> implements IPriorityQueue<T> {
 
     @Override
     public void display() {
+        
+    }
 
+    /**
+     * binomial queue node
+     * @param <T>
+     */
+    private static class BinomialNode<T extends Comparable> implements ITree.INode<T> {
+
+        private T element;
+        private BinomialNode<T> leftNode;
+        private BinomialNode<T> nextSibling; //rightNode
+
+        private BinomialNode(T element) {
+            this.element = element;
+        }
+
+        @Override
+        public T getElement() {
+            return element;
+        }
+
+        @Override
+        public BinomialNode<T> getRightNode() {
+            return nextSibling;
+        }
+
+        @Override
+        public BinomialNode<T> getLeftNode() {
+            return leftNode;
+        }
     }
 }
