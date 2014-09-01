@@ -21,10 +21,11 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
     }
 
     private void insert(BinomialNode<T> node) {
+        this.size += (1 << node.degree);
         this.root = this.merge(this.root, node);
-        this.size ++;
     }
 
+    //merge b1, b2
     private BinomialNode<T> merge(BinomialNode node1, BinomialNode node2) {
         if (node1 == null)
             return node2;
@@ -43,77 +44,87 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
     private BinomialNode<T> merge1(BinomialNode<T> b1, BinomialNode<T> b2) {
 
         BinomialNode current = b1;
-        while (b2.degree > current.degree && (current = current.next) != null)
-            ;
+        BinomialNode prev = null;
+        while (current != null && b2.degree > current.degree) {
+            prev = current;
+            current = current.next;
+        }
 
-        BinomialNode<T> prev = current.prev;
-        if (b2.degree == current.degree) {
-            BinomialNode<T> node = this.combineTrees(current, b2);
+        //end queue
+        if (current == null)
+            prev.next = b2;
 
+        else if (b2.degree == current.degree) {
+
+            //add new combine node into queue
+            BinomialNode _new = this.combineTrees(current, b2);
+            _new.next = current.next;
+            current = _new;
+
+            //head
+            if (prev == null)
+                b1 = _new;
+            else
+                prev.next = _new;
+
+            //combine two adjacent node if degree equals
             while (current.next != null &&
-                    current.next.degree == node.degree) {
+                    current.next.degree == current.degree) {
 
-                current = current.next;
-                //prev = current.prev;
-                node = this.combineTrees(current, node);
+                //add new combine node into queue
+                _new = this.combineTrees(current, current.next);
+
+                //remove current and current next and add _new
+                _new.next = current.next.next;
+                if (prev == null)
+                    b1 = _new;
+                else
+                    prev.next = _new;
+
+                current = _new;
             }
 
-            //head
-            if (prev == null) {
-                node.next = current.next;
-                    if (node.next != null)
-                node.next.prev = node;
-
-                node.prev = null;
-                return node;
-            } else {
-                prev.next = node;
-                node.prev = prev;
-
-                node.next = current.next;
-                if (node.next != null)
-                    node.next.prev = node;
-
-                return b1;
-            }
-
-        //b2.degree < current.degree
-        } else {
-            //head
+        //b2.degree < current.degree, add b2 prev current
+        } else  {
             if (prev == null) {
                 b2.next = current;
-                current.prev = b2;
-                b2.prev = null;
-
-                return b2;
-
+                b1 = b2;
             } else {
                 prev.next = b2;
-                b2.prev = prev;
-                current.prev = b2;
                 b2.next = current;
-
-                return b1;
             }
         }
+
+        return b1;
     }
 
     @Override
     public T poll() {
-        BinomialNode<T> min = this.getMin();
 
-        //remove min from queue
-        if (min.prev == null)
-            this.root = min.next;
+        //find and remove min from queue
+        if (this.isEmpty())
+            throw new EmptyQueueException();
 
-        else if (min.next == null)
-            min.prev.next = null;
+        BinomialNode<T> current = this.root;
+        BinomialNode<T> prev = null;
+        BinomialNode<T> min = current;
+        BinomialNode<T> minPrev = prev;
 
-        else {
-            min.prev.next = min.next;
-            min.next.prev = min.prev;
+        //find
+        while (current.next != null) {
+            prev = current;
+            current = current.next;
+            if (current.element.compareTo(min.element) < 0) {
+                min = current;
+                minPrev = prev;
+            }
         }
 
+        //remove
+        if (null == minPrev)
+            this.root = min.next;
+        else
+            minPrev.next = min.next;
         this.size -= (1 << min.degree);
 
         BinomialNode<T> left = min.leftNode;
@@ -130,7 +141,17 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
 
     @Override
     public T peek() {
-        BinomialNode<T> min = this.getMin();
+        if (this.isEmpty())
+            throw new EmptyQueueException();
+
+        BinomialNode<T> current = this.root;
+        BinomialNode<T> min = current;
+        while (current.next != null) {
+            current = current.next;
+            if (current.element.compareTo(min.element) < 0)
+                min = current;
+        }
+
         return min.element;
     }
 
@@ -176,22 +197,6 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
             TreePrinter.printNode(iterator.next());
             System.out.println();
         }
-    }
-
-    // get the min node of queue
-    private BinomialNode<T> getMin() {
-        if (this.isEmpty())
-            throw new EmptyQueueException();
-
-        BinomialNode<T> node = this.root;
-        BinomialNode<T> min = node;
-        while (node.next != null) {
-            node = node.next;
-            if (node.element.compareTo(min.element) < 0)
-                min = node;
-        }
-
-        return min;
     }
 
     //this iterator
@@ -242,14 +247,11 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
 
         //a binomial node has a next node to construct a linked queue
         private BinomialNode<T> next;
-        private BinomialNode<T> prev;
 
         // add a sub binomial node,
         private BinomialNode addSubBinomialNode(BinomialNode b) {
             b.nextSibling = this.leftNode;
             this.leftNode = b;
-            b.next = null;
-            b.prev = null;
 
             this.degree ++;
 
@@ -323,12 +325,16 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
         queue.offer(13);
         queue.offer(14);
 
-        queue.display();
+        //queue.display();
 
+        System.out.println("-------------size: " + queue.size());
         System.out.println("peek: " + queue.peek());
+        System.out.println("display: ");
         queue.display();
 
         System.out.println("poll: " + queue.poll());
+        System.out.println("-------------size: " + queue.size());
+        System.out.println("display: ");
         queue.display();
     }
 }
