@@ -15,6 +15,14 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
     private BinomialNode<T> root;
     private int size;
 
+    public BinomialLinkedQueue() {
+    }
+
+    public BinomialLinkedQueue(BinomialLinkedQueue<T> queue) {
+        if (null == queue && !queue.isEmpty())
+            this.merge(this.root, queue.root);
+    }
+
     @Override
     public void offer(T t) {
         this.insert(new BinomialNode<T>(t));
@@ -74,7 +82,7 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
                 //add new combine node into queue
                 _new = this.combineTrees(current, current.next);
 
-                //remove current and current next and add _new
+                //remove current, current next and add _new
                 _new.next = current.next.next;
                 if (prev == null)
                     b1 = _new;
@@ -173,12 +181,28 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
 
     @Override
     public int indexOf(T t) {
-        return 0;
+        throw new UnsupportedOperationException("Unsupported method.");
     }
 
     @Override
     public boolean contains(T t) {
+        if (this.isEmpty()) return false;
+
+        Iterator<BinomialNode> iterator = this.root.iterator();
+        while (iterator.hasNext()) {
+            if (this.contains(t, iterator.next()))
+                return true;
+        }
         return false;
+    }
+
+    private boolean contains(T t, BinomialNode node) {
+        if (node == null) return false;
+
+        if (node.element.equals(t))
+            return true;
+
+        return this.contains(t, node.leftNode) || this.contains(t, node.nextSibling);
     }
 
     @Override
@@ -192,33 +216,12 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
 
     @Override
     public void display() {
-        Iterator<BinomialNode> iterator = new BinomialLinkedQueueIterator();
+        if (isEmpty()) return;
+
+        Iterator<BinomialNode> iterator = this.root.iterator();
         while (iterator.hasNext()) {
             TreePrinter.printNode(iterator.next());
             System.out.println();
-        }
-    }
-
-    //this iterator
-    private class BinomialLinkedQueueIterator implements Iterator<BinomialNode> {
-
-        private BinomialNode current = BinomialLinkedQueue.this.root;
-
-        @Override
-        public boolean hasNext() {
-            return current != null;
-        }
-
-        @Override
-        public BinomialNode next() {
-            BinomialNode node = current;
-            current = current.next;
-            return node;
-        }
-
-        @Override
-        public void remove() {
-
         }
     }
 
@@ -283,7 +286,7 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
 
             @Override
             public void remove() {
-
+               throw new UnsupportedOperationException("");
             }
         }
 
@@ -320,10 +323,7 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
         queue.offer(8);
         queue.offer(9);
         queue.offer(10);
-        queue.offer(11);
-        queue.offer(12);
-        queue.offer(13);
-        queue.offer(14);
+
 
         //queue.display();
 
@@ -336,5 +336,8 @@ public class BinomialLinkedQueue<T extends Comparable> implements IPriorityQueue
         System.out.println("-------------size: " + queue.size());
         System.out.println("display: ");
         queue.display();
+
+        System.out.println(queue.contains(7));
+        System.out.println(queue.contains(17));
     }
 }
