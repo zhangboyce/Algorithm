@@ -12,10 +12,13 @@ import java.util.Iterator;
  */
 public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<T> {
 
+    //can hold degree is 0,1,2,3, so max size is 1111 = 2^3 + 2^1 + 2^1 + 2^0 = 15
     private static final int DEFAULT_CAPACITY = 4;
 
-    // binomial node array, sorted by degree
-    private BinomialNode<T>[] queue;
+    //binomial node array, node degree is the index in array
+    private BinomialNode<T>[] array;
+
+    //queue elements size
     private int size;
 
     public BinomialArrayQueue() {
@@ -26,7 +29,7 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
         if (capacity < 0)
             throw new IllegalArgumentException();
 
-        this.queue = new BinomialNode[capacity];
+        this.array = new BinomialNode[capacity];
     }
 
     @Override
@@ -38,32 +41,28 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
 
     @Override
     public T poll() {
-        if (isEmpty())
-            throw new EmptyQueueException();
 
-        Iterator<BinomialNode> iterator = this.iterator();
-        BinomialNode<T> min = null;
-        BinomialNode<T> current;
-        while (iterator.hasNext()) {
-            current = iterator.next();
-            if (min == null || current.element.compareTo(min.element) < 0)
-                min = current;
-        }
+        //find the min BinomialNode from queue
+        BinomialNode<T> min = this.findMin();
 
-        //remove min
+        //remove the min BinomialNode from queue
         this.size -= (1 << min.degree);
-        this.queue[min.degree] = null;
+        this.array[min.degree] = null;
 
+        //add the min's children node into a new queue
         BinomialArrayQueue<T> children = new BinomialArrayQueue<T>(min.degree);
         BinomialNode<T> left = min.leftNode;
         while (left != null) {
-            children.queue[left.degree] = left;
-            children.size += (1 << left.degree);
-            children.queue[left.degree].nextSibling = null;
-
+            int degree = left.degree;
+            children.array[degree] = left;
+            children.size += (1 << degree);
             left = left.nextSibling;
+
+            //remove the nextSibling of the root node
+            children.array[degree].nextSibling = null;
         }
 
+        //merge the new queue to this queue
         this.merge(children);
 
         return min.element;
@@ -71,6 +70,12 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
 
     @Override
     public T peek() {
+        BinomialNode<T> min = this.findMin();
+        return min.element;
+    }
+
+    // find the min node from queue
+    private BinomialNode<T> findMin() {
         if (isEmpty())
             throw new EmptyQueueException();
 
@@ -83,7 +88,7 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
                 min = current;
         }
 
-        return min.element;
+        return min;
     }
 
     @Override
@@ -99,7 +104,7 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
     @Override
     public void clear() {
         this.size = 0;
-        this.queue = new BinomialNode[DEFAULT_CAPACITY];
+        this.array = new BinomialNode[DEFAULT_CAPACITY];
     }
 
     @Override
@@ -111,6 +116,7 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
     public boolean contains(T t) {
         if (this.isEmpty()) return false;
 
+        // iterate every node
         Iterator<BinomialNode> iterator = this.iterator();
         while (iterator.hasNext()) {
             if (this.contains(t, iterator.next()))
@@ -119,6 +125,8 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
         return false;
     }
 
+    //if current node element is equals t, return true.
+    //else, find from current node's left or nextSibling recursive
     private boolean contains(T t, BinomialNode node) {
         if (node == null) return false;
 
@@ -131,7 +139,7 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
     @Override
     public void addAll(IQueue<T> queue) {
         if (queue.isEmpty())
-            throw new EmptyQueueException("Cannot access empty queue.");
+            throw new EmptyQueueException("Cannot access empty array.");
 
         while (!queue.isEmpty())
             this.offer(queue.poll());
@@ -146,37 +154,40 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
         }
     }
 
-    //insert a binomial node to queue
+    //insert a binomial node to array
     private void insert(BinomialNode<T> node) {
         if (node == null) return;
 
         int i = node.degree;
-        if (i >= this.queue.length) {
+        //if the degree > the max index, ensure capacity to degree + 1 (max index is degree)
+        if (i > this.array.length-1) {
             this.ensureCapacity(i + 1);
-            this.queue[i] = node;
+            this.array[i] = node;
             return;
+
         }
 
-        BinomialNode<T> b = this.queue[i];
+        BinomialNode<T> b = this.array[i];
         if (b == null) {
-            this.queue[i] = node;
+            this.array[i] = node;
         } else {
             BinomialNode<T> carry = this.combineTrees(b, node);
-            this.queue[i] = null;
+            this.array[i] = null;
             this.insert(carry);
         }
     }
 
-    //merge a arrayed binomial node queue
+    //merge a arrayed binomial node array
     //like 101001110 + 110101 binary addition
     private void merge(BinomialArrayQueue<T> rhs) {
         if (this == rhs || null == rhs || rhs.isEmpty())
             return;
 
         this.size += rhs.size;
-        if (this.size >= this.queue.length) {
-            int maxSize = Math.max(this.queue.length, rhs.queue.length);
-            this.ensureCapacity(maxSize + 1);
+        int capacity = (int)(Math.log(this.size)/Math.log(2)) + 1;
+        if (capacity > this.array.length) {
+            int maxSize = Math.max(this.array.length, rhs.array.length) + 1;
+            this.ensureCapacity(maxSize);
         }
 
         BinomialNode<T> carry = null;
@@ -184,8 +195,8 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
         //i is the array index, j is the number of bits
         for (int i=0, j=1; j<=this.size; i++, j*=2 ) {
 
-            BinomialNode<T> t1 = this.queue[i];
-            BinomialNode<T> t2 = i<rhs.queue.length ? rhs.queue[i] : null;
+            BinomialNode<T> t1 = this.array[i];
+            BinomialNode<T> t2 = i<rhs.array.length ? rhs.array[i] : null;
 
             int whichCase = t1 == null ? 0 : 1;
             whichCase += t2 == null ? 0 : 2;
@@ -197,51 +208,52 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
                     break;
 
                 case 2: //only rhs
-                    this.queue[i] = t2;
-                    rhs.queue[i] = null;
+                    this.array[i] = t2;
+                    rhs.array[i] = null;
                     break;
 
                 case 3: //this and rhs
                     carry = this.combineTrees(t1, t2);
-                    this.queue[i] = rhs.queue[i] = null;
+                    this.array[i] = rhs.array[i] = null;
                     break;
 
                 case 4: //only carry
-                    this.queue[i] = carry;
+                    this.array[i] = carry;
                     carry = null;
                     break;
 
                 case 5: //this and carry
                     carry = this.combineTrees(t1, carry);
-                    this.queue[i] = null;
+                    this.array[i] = null;
                     break;
 
                 case 6: //rhs and carry
                     carry = this.combineTrees(t2, carry);
-                    rhs.queue[i] = null;
+                    rhs.array[i] = null;
                     break;
 
                 case 7: //all trees
-                    this.queue[i] = carry;
+                    this.array[i] = carry;
                     carry = this.combineTrees(t1, t2);
-                    rhs.queue[i] = null;
+                    rhs.array[i] = null;
                     break;
             }
 
-            for (int k=0; k<rhs.queue.length; k++)
-                rhs.queue[k] = null;
-            rhs.size = 0;
         }
+
+        for (int k=0; k<rhs.array.length; k++)
+            rhs.array[k] = null;
+        rhs.size = 0;
 
     }
 
     // ensure binomial node array capacity
     private void ensureCapacity(int capacity) {
         BinomialNode<T>[] newTree = new BinomialNode[capacity];
-        for (int i=0; i<this.queue.length; i++)
-            newTree[i] = newTree[i];
+        for (int i=0; i<this.array.length; i++)
+            newTree[i] = this.array[i];
 
-        this.queue = newTree;
+        this.array = newTree;
     }
 
     //merge two BinomialNode same size
@@ -257,28 +269,29 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
         return new BinomialArrayQueueIterator();
     }
 
-    //queue iterator
+    //array iterator
     private class BinomialArrayQueueIterator implements Iterator<BinomialNode> {
 
         private int current;
 
         private BinomialArrayQueueIterator() {
-            while ( current < BinomialArrayQueue.this.queue.length &&
-                    BinomialArrayQueue.this.queue[current] == null)
+            // init current index is the first not null index
+            while ( current < BinomialArrayQueue.this.array.length &&
+                    BinomialArrayQueue.this.array[current] == null)
                 current ++;
         }
 
         @Override
         public boolean hasNext() {
-            return current < BinomialArrayQueue.this.queue.length;
+            return current < BinomialArrayQueue.this.array.length;
         }
 
         @Override
         public BinomialNode next() {
-
-            BinomialNode node = BinomialArrayQueue.this.queue[current++];
-            while ( current < BinomialArrayQueue.this.queue.length &&
-                    BinomialArrayQueue.this.queue[current] == null)
+            BinomialNode node = BinomialArrayQueue.this.array[current++];
+            // set current index is the next not null index
+            while ( current < BinomialArrayQueue.this.array.length &&
+                    BinomialArrayQueue.this.array[current] == null)
                 current ++;
 
             return node;
@@ -291,7 +304,7 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
     }
 
     /**
-     * binomial queue node
+     * binomial array node
      * @param <T>
      */
     private static class BinomialNode<T extends Comparable> implements ITree.INode<T> {
@@ -345,7 +358,7 @@ public class BinomialArrayQueue<T extends Comparable> implements IPriorityQueue<
         queue.offer(10);
 
 
-        //queue.display();
+        //array.display();
 
         System.out.println("-------------size: " + queue.size());
         System.out.println("peek: " + queue.peek());
