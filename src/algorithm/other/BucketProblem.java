@@ -8,7 +8,9 @@ import java.util.Arrays;
 public class BucketProblem {
 
     private static final int DEFAULT_CAPACITY = 10;
+    private static final int DEFAULT_BUCKET_CAPACITY = 10;
     private Bucket[] buckets;
+    private int size;
 
     public BucketProblem(int capacity) {
         if (capacity <=0 )
@@ -21,7 +23,51 @@ public class BucketProblem {
         this(DEFAULT_CAPACITY);
     }
 
-    public void add(int data) {}
+    public void nextFit(int data) {
+        if (data <=0 || data > DEFAULT_BUCKET_CAPACITY) return;
+
+        Bucket bucket = null;
+        if (size > 0)
+            bucket = this.buckets[size-1];
+
+        if (null == bucket || !bucket.canFit(data)) {
+            if (this.size >= this.buckets.length)
+                this.ensureCapacity(1 << this.buckets.length);
+
+            bucket  = new Bucket("1", DEFAULT_BUCKET_CAPACITY);
+            this.buckets[size ++] = bucket;
+        }
+        bucket.fit(data);
+    }
+
+    public void firstFit(int data) {
+        if (data <=0 || data > DEFAULT_BUCKET_CAPACITY) return;
+
+        Bucket bucket = null;
+        if (size > 0)
+            for (int i=0; i<this.size; i++)
+                if (this.buckets[i].canFit(data)) {
+                    bucket = this.buckets[i];
+                    break;
+                }
+        
+        if (null == bucket) {
+            if (this.size >= this.buckets.length)
+                this.ensureCapacity(1 << this.buckets.length);
+
+            bucket  = new Bucket("1", DEFAULT_BUCKET_CAPACITY);
+            this.buckets[size ++] = bucket;
+        }
+        bucket.fit(data);
+    }
+
+    private void ensureCapacity(int capacity) {
+        Bucket[] newBuckets = new Bucket[capacity];
+        for (int i=0; i<this.buckets.length; i++)
+            newBuckets[i] = this.buckets[i];
+
+        this.buckets = newBuckets;
+    }
 
     private static class Bucket {
         //bucket name
@@ -50,11 +96,16 @@ public class BucketProblem {
             this(name, 1);
         }
 
-        private boolean add(int element) {
+        private boolean canFit(int element) {
             if (element <= 0) return false;
 
             if (element > this.remainingCapacity)
                 return false;
+            return true;
+        }
+
+        private boolean fit(int element) {
+            if (!canFit(element)) return false;
 
             if (this.size >= this.elements.length)
                 this.ensureCapacity(1 << this.elements.length);
