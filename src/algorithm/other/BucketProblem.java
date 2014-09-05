@@ -34,7 +34,7 @@ public class BucketProblem {
             if (this.size >= this.buckets.length)
                 this.ensureCapacity(1 << this.buckets.length);
 
-            bucket  = new Bucket("1", DEFAULT_BUCKET_CAPACITY);
+            bucket  = new Bucket("b_" + this.size , DEFAULT_BUCKET_CAPACITY);
             this.buckets[size ++] = bucket;
         }
         bucket.fit(data);
@@ -50,12 +50,12 @@ public class BucketProblem {
                     bucket = this.buckets[i];
                     break;
                 }
-        
+
         if (null == bucket) {
             if (this.size >= this.buckets.length)
                 this.ensureCapacity(1 << this.buckets.length);
 
-            bucket  = new Bucket("1", DEFAULT_BUCKET_CAPACITY);
+            bucket  = new Bucket("b_" + this.size , DEFAULT_BUCKET_CAPACITY);
             this.buckets[size ++] = bucket;
         }
         bucket.fit(data);
@@ -69,6 +69,23 @@ public class BucketProblem {
         this.buckets = newBuckets;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("[");
+
+        for (int i=0; i<this.size; i++)
+            builder.append(this.buckets[i].toString()).append(", ");
+
+        if (builder.length() > 3)
+            builder.delete(builder.length()-2, builder.length());
+        builder.append("]");
+
+        return  "buckets: " + builder.toString();
+    }
+
+    /**
+     * bucket class
+     */
     private static class Bucket {
         //bucket name
         private String name;
@@ -126,7 +143,58 @@ public class BucketProblem {
 
         @Override
         public String toString() {
-            return this.name + ": " + Arrays.toString(elements);
+            StringBuilder builder = new StringBuilder("[");
+
+            for (int i=0; i<this.size; i++)
+                builder.append(this.elements[i]).append(", ");
+
+            if (builder.length() > 3)
+                builder.delete(builder.length()-2, builder.length());
+            builder.append("]");
+
+            return this.name + ": " + builder.toString();
         }
+    }
+
+    public static void main(String[] args) {
+        BucketProblem bucket1 = new BucketProblem();
+        bucket1.nextFit(1);
+        bucket1.nextFit(2);
+        bucket1.nextFit(7);
+        bucket1.nextFit(4);
+        bucket1.nextFit(1);
+        bucket1.nextFit(1);
+        bucket1.nextFit(2);
+        bucket1.nextFit(3);
+        bucket1.nextFit(5);
+        bucket1.nextFit(1);
+        bucket1.nextFit(4);
+        bucket1.nextFit(3);
+        bucket1.nextFit(6);
+        bucket1.nextFit(7);
+        bucket1.nextFit(5);
+        bucket1.nextFit(3);
+
+        System.out.println(bucket1);
+
+        BucketProblem bucket2 = new BucketProblem();
+        bucket2.firstFit(1);
+        bucket2.firstFit(2);
+        bucket2.firstFit(7);
+        bucket2.firstFit(4);
+        bucket2.firstFit(1);
+        bucket2.firstFit(1);
+        bucket2.firstFit(2);
+        bucket2.firstFit(3);
+        bucket2.firstFit(5);
+        bucket2.firstFit(1);
+        bucket2.firstFit(4);
+        bucket2.firstFit(3);
+        bucket2.firstFit(6);
+        bucket2.firstFit(7);
+        bucket2.firstFit(5);
+        bucket2.firstFit(3);
+
+        System.out.println(bucket2);
     }
 }
