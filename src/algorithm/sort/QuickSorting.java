@@ -41,6 +41,30 @@ public class QuickSorting<T extends Comparable> extends AbstractSorting<T> {
         return low;
     }
 
+    private int getMiddle2(T[] target, int low, int high) {
+        T x = target[high];
+        int i = low -1;
+        for (int j=low; j<high; j++) {
+            // if the target[j] < x , swap the index ++i element and index j element
+            if (target[j].compareTo(x) < 0) {
+                this.swap(target, ++i, j);
+
+            // if the target[j] >= x, do nothing, continue j++ to handle the next element
+            } else
+                ;
+
+        }
+        this.swap(target, i+1, high);
+
+        return i;
+    }
+
+    private void swap(T[] target, int p, int q) {
+        T temp = target[p];
+        target[p] = target[q];
+        target[q] = temp;
+    }
+
     public static void main(String[] args) {
         Integer[] target = {2, 4, 5, 3, 6, 1, 8, 9, 0, 7,10,-2,9,-3,12,8,3,5,-5,0};
 

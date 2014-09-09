@@ -1,35 +1,46 @@
 package algorithm.other;
 
-import java.util.Arrays;
+import algorithm.sort.InsertSorting;
+import algorithm.sort.Sorting;
 
 /**
  * Created by boyce on 2014/9/4.
  */
-public class BucketProblem {
+public class BucketList {
 
     private static final int DEFAULT_CAPACITY = 10;
     private static final int DEFAULT_BUCKET_CAPACITY = 10;
     private Bucket[] buckets;
     private int size;
 
-    public BucketProblem(int capacity) {
+    /**
+     * construct a BucketList
+     * @param capacity
+     */
+    public BucketList(int capacity) {
         if (capacity <=0 )
             throw new IllegalArgumentException();
 
         this.buckets = new Bucket[capacity];
     }
 
-    public BucketProblem() {
+    public BucketList() {
         this(DEFAULT_CAPACITY);
     }
 
+    /**
+     * next fit, if next bucket has full, new a bucket to fit
+     * @param data
+     */
     public void nextFit(int data) {
         if (data <=0 || data > DEFAULT_BUCKET_CAPACITY) return;
 
         Bucket bucket = null;
+        //get the next bucket
         if (size > 0)
             bucket = this.buckets[size-1];
 
+        //size = 0 or the next bucket cannot fit the data
         if (null == bucket || !bucket.canFit(data)) {
             if (this.size >= this.buckets.length)
                 this.ensureCapacity(1 << this.buckets.length);
@@ -40,17 +51,24 @@ public class BucketProblem {
         bucket.fit(data);
     }
 
+    /**
+     * first fit, find a bucket from bucket-array 0 to n
+     * util find the first bucket can fit the data
+     * @param data
+     */
     public void firstFit(int data) {
         if (data <=0 || data > DEFAULT_BUCKET_CAPACITY) return;
 
         Bucket bucket = null;
         if (size > 0)
+            //find the first bucket that can fit data
             for (int i=0; i<this.size; i++)
                 if (this.buckets[i].canFit(data)) {
                     bucket = this.buckets[i];
                     break;
                 }
 
+        // if size =0 or no bucket in array can fit the data
         if (null == bucket) {
             if (this.size >= this.buckets.length)
                 this.ensureCapacity(1 << this.buckets.length);
@@ -59,6 +77,22 @@ public class BucketProblem {
             this.buckets[size ++] = bucket;
         }
         bucket.fit(data);
+    }
+
+    /**
+     * fit a array
+     * sort the array desc
+     * @param array
+     */
+    public void fit(Integer[] array) {
+        if (null == array || array.length == 0)
+            return;
+
+        Sorting sorting = new InsertSorting();
+        sorting.sortDescending(array);
+
+        for (int i=0; i<array.length; i++)
+            this.firstFit(array[i]);
     }
 
     private void ensureCapacity(int capacity) {
@@ -157,7 +191,7 @@ public class BucketProblem {
     }
 
     public static void main(String[] args) {
-        BucketProblem bucket1 = new BucketProblem();
+        BucketList bucket1 = new BucketList();
         bucket1.nextFit(1);
         bucket1.nextFit(2);
         bucket1.nextFit(7);
@@ -177,7 +211,7 @@ public class BucketProblem {
 
         System.out.println(bucket1);
 
-        BucketProblem bucket2 = new BucketProblem();
+        BucketList bucket2 = new BucketList();
         bucket2.firstFit(1);
         bucket2.firstFit(2);
         bucket2.firstFit(7);
