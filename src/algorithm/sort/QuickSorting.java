@@ -56,7 +56,7 @@ public class QuickSorting<T extends Comparable> extends AbstractSorting<T> {
         }
         this.swap(target, i+1, high);
 
-        return i;
+        return i+1;
     }
 
     private void swap(T[] target, int p, int q) {

@@ -50,7 +50,7 @@ public class OrderStatistics<T extends Comparable> {
     }
 
     public T findArticleN(T[] array, int n) {
-        if (n >= array.length)
+        if (n > array.length)
             throw new ArrayIndexOutOfBoundsException("");
 
         return this.findArticleN(array, 0, array.length-1, n);
@@ -65,7 +65,6 @@ public class OrderStatistics<T extends Comparable> {
      * @return
      */
     private T findArticleN(T[] array, int p, int q, int i) {
-
         if (p == q)
             return array[p];
 
@@ -74,7 +73,7 @@ public class OrderStatistics<T extends Comparable> {
             return array[t];
 
         else if (t < i-1)
-            return findArticleN(array, t+1, q, i-t);
+            return findArticleN(array, t+1, q, i-t-1);
 
         else
             return findArticleN(array, p, t-1, i);
@@ -106,9 +105,12 @@ public class OrderStatistics<T extends Comparable> {
 
     public static void main(String[] args) {
         OrderStatistics<Integer> orderStatistics = new OrderStatistics<Integer>();
-        Integer[] array = {2, 3, 11, 4, 6, 2, 0, 13, 7, 9, 12};
+        Integer[] array = {2, 3, 11, 4, 6, 1, 0, 13, 7, 9, 12};
 
-        System.out.println(orderStatistics.findMax(array));
-        System.out.println(orderStatistics.findMin(array));
+//        System.out.println(orderStatistics.findMax(array));
+//        System.out.println(orderStatistics.findMin(array));
+//        System.out.println(orderStatistics.findArticleN(array, 1));
+//        System.out.println(orderStatistics.findArticleN(array, 11));
+        System.out.println(orderStatistics.findArticleN(array, 5));
     }
 }
