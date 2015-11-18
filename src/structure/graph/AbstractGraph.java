@@ -59,7 +59,7 @@ public abstract class AbstractGraph<T> implements IGraph<T> {
                 vertex = (Vertex<T>) AbstractGraph.this.vertexs.get(element);
             }
             else {
-                throw new IllegalArgumentException("");
+                throw new IllegalArgumentException();
             }
 
             vertex.inDegree += 1;
