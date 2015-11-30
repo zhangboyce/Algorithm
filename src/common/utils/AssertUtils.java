@@ -1,5 +1,7 @@
 package common.utils;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Boyce
@@ -26,6 +28,15 @@ public abstract class AssertUtils {
 
     public static void assertNotEmpty(String str, String msg) {
         if (StringUtils.isEmpty(str))
+            throw new IllegalArgumentException(msg);
+    }
+
+    public static void assertNotEmpty(List<?> list) {
+        assertNotEmpty(list, null);
+    }
+
+    public static void assertNotEmpty(List<?> list, String msg) {
+        if (null == list || list.size() == 0)
             throw new IllegalArgumentException(msg);
     }
 
