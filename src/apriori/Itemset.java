@@ -49,9 +49,9 @@ public class Itemset implements Cloneable {
      * generate (k+1)-candidate itemset from k-frequent itemset
      * @return a (k+1)-candidate itemset
      */
-    public Itemset candidate_gen() {
+    public Itemset frequent_gen(Transactions transactions) {
         int c_cardinal_number = this.cardinal_number + 1;
-        Itemset candidateItemset = new Itemset(c_cardinal_number);
+        Itemset frequentItemset = new Itemset(c_cardinal_number);
 
         for(int i=0; i<length; i++) {
             for (int j=i+1; j<length; j++) {
@@ -67,7 +67,7 @@ public class Itemset implements Cloneable {
                     multiItem.addValue(s1.value());
                     multiItem.addValue(s2.value());
 
-                    this.combineTransaction(i1, i2, multiItem, candidateItemset);
+                    this.combineTransaction(i1, i2, multiItem, frequentItemset, transactions);
                 } else {
 
                     MultiItem m1 = (MultiItem)i1;
@@ -79,15 +79,16 @@ public class Itemset implements Cloneable {
                         multiItem.addValues(m1.values());
                         multiItem.addValue(m2.values().get(m2.length() - 1));
 
-                        this.combineTransaction(i1, i2, multiItem, candidateItemset);
+                        this.combineTransaction(i1, i2, multiItem, frequentItemset, transactions);
                     }
                 }
             }
         }
-        return candidateItemset;
+        return frequentItemset;
     }
 
-    private void combineTransaction(Item i1, Item i2, MultiItem multiItem, Itemset candidateItemset) {
+    private void combineTransaction(Item i1, Item i2, MultiItem multiItem,
+                                    Itemset frequentItemset, Transactions transactions) {
         // add item transactions
         Set<Transaction> t1 = i1.transactions();
         Set<Transaction> t2 = i2.transactions();
@@ -99,34 +100,33 @@ public class Itemset implements Cloneable {
         t.retainAll(t2);
 
         multiItem.addTransactions(t);
-        candidateItemset.addItem(multiItem);
+
+        // 计算是不是频繁项集，如果是加入frequentItemset，否则舍弃
+        frequentItemset(multiItem, transactions, frequentItemset);
     }
 
-    public Itemset frequent_gen(Transactions transactions) {
-        Itemset frequentItemset = new Itemset(this.cardinal_number);
-        for (Item item : items) {
-            int count = item.count();
-            int n = transactions.n();
+    private static boolean frequentItemset(Item item, Transactions transactions, Itemset itemset) {
+        int count = item.count();
+        int n = transactions.n();
+        double sup = (double)count/n;
+        boolean isFrequentItemset = sup >= transactions.minsup();
 
-            double sup = (double)count/n;
-            if (sup >= transactions.minsup()) {
-                frequentItemset.addItem(item);
+        if (isFrequentItemset) {
+            itemset.addItem(item);
 
-                System.out.println("> add    a item: " + item + ", sup=" + count + "/" + n + " = " + (double)count/n);
-            } else  {
-                System.out.println("> remove a item: " + item + ", sup=" + count + "/" + n + " = " + (double)count/n);
-            }
+            System.out.println("> add    a item: " + item + ", sup=" + count + "/" + n + " = " + (double)count/n);
+        } else  {
+            System.out.println("> remove a item: " + item + ", sup=" + count + "/" + n + " = " + (double)count/n);
         }
-        System.out.println();
 
-        return frequentItemset;
+        return isFrequentItemset;
     }
 
     public static Itemset init(Transactions transactions) {
         Itemset candidateItemset = new Itemset(1);
         List<SingleItem> singleItems = transactions.allSingleItems();
         for (Item item: singleItems) {
-            candidateItemset.addItem(item);
+            frequentItemset(item, transactions, candidateItemset);
         }
         return candidateItemset;
     }

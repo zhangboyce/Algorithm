@@ -1,7 +1,5 @@
 package apriori;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Boyce

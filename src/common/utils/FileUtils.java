@@ -1,7 +1,5 @@
 package common.utils;
 
-import org.wltea.analyzer.dic.Dictionary;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

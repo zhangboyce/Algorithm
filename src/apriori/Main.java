@@ -49,38 +49,23 @@ public class Main {
         System.out.println(transactions);
         System.out.println(transactions.n());
 
-        Itemset c1 = Itemset.init(transactions);
-        System.out.println(c1);
-
-        Itemset f1 = c1.frequent_gen(transactions);
+        Itemset f1 = Itemset.init(transactions);
         System.out.println(f1);
 
-        Itemset c2 = f1.candidate_gen();
-        System.out.println(c2);
-
-        Itemset f2 = c2.frequent_gen(transactions);
+        Itemset f2 = f1.frequent_gen(transactions);
         System.out.println(f2);
 
-        Itemset c3 = f2.candidate_gen();
-        System.out.println(c3);
-
-        Itemset f3 = c3.frequent_gen(transactions);
+        Itemset f3 = f2.frequent_gen(transactions);
         System.out.println(f3);
 
         System.out.println("-----------------------------------------------");
 
         // for
-        Itemset c = Itemset.init(transactions);
-        System.out.println(c);
-
-        Itemset f = c.frequent_gen(transactions);
+        Itemset f = Itemset.init(transactions);
         System.out.println(f);
 
         while (!f.isEmpty()) {
-            c = f.candidate_gen();
-            System.out.println(c);
-
-            f = c.frequent_gen(transactions);
+            f = f.frequent_gen(transactions);
             System.out.println(f);
         }
     }

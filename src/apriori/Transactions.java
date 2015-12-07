@@ -1,7 +1,6 @@
 package apriori;
 
 import common.utils.AssertUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.*;
 
