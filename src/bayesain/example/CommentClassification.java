@@ -58,8 +58,8 @@ public class CommentClassification {
         }
 
 
-//        test_jd_12(cs);
-        test_jd_345(cs);
+        test_jd_12(cs);
+//        test_jd_345(cs);
 
     }
 
