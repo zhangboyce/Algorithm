@@ -112,9 +112,9 @@ public class Itemset implements Cloneable {
             if (sup >= transactions.minsup()) {
                 frequentItemset.addItem(item);
 
-                System.out.println("> add    a item: " + item + ", sup=" + count + "/" + n);
+                System.out.println("> add    a item: " + item + ", sup=" + count + "/" + n + " = " + (double)count/n);
             } else  {
-                System.out.println("> remove a item: " + item + ", sup=" + count + "/" + n);
+                System.out.println("> remove a item: " + item + ", sup=" + count + "/" + n + " = " + (double)count/n);
             }
         }
         System.out.println();
