@@ -18,7 +18,7 @@ import java.util.Set;
 public class MultiItem extends Item {
 
     // item values
-    private List<SingleItem> values;
+    protected List<SingleItem> values;
 
     public MultiItem(int length) {
         super(length);
@@ -32,6 +32,8 @@ public class MultiItem extends Item {
         AssertUtils.assertTrue(this.values.size() < this.length, "out of the item length.");
 
         SingleItem singleItem = new SingleItem(obj);
+
+        // TODO 保证list里面的元素不重复
         if (!this.values.contains(singleItem))
             this.values.add(singleItem);
     }
@@ -86,6 +88,7 @@ public class MultiItem extends Item {
             return false;
         }
 
+        // TODO 因为两个list里面的元素都不重复，可以用这种方式，如果list里面的元素有重复，不可以。
         if (!values.containsAll(multiItem.values) &&
                 multiItem.values.containsAll(values)) {
             return false;

@@ -30,21 +30,10 @@ public class Transaction {
     public void addItem(Object value) {
         AssertUtils.assertNotNull(value, "cannot add a item value into the transaction.");
 
-        SingleItem singleItem = new SingleItem(value);
-        if (!this.transactions.containsItem(singleItem)) {
-
-            this.transactions.addItem(singleItem);
+        SingleItem singleItem = this.transactions.getItem(value);
+        if (!this.singleItems.contains(singleItem)) {
             this.singleItems.add(singleItem);
             singleItem.addTransaction(this);
-
-        } else {
-            int index = this.transactions.indexOf(singleItem);
-            singleItem = this.transactions.get(index);
-            if (!this.singleItems.contains(singleItem)) {
-
-                this.singleItems.add(singleItem);
-                singleItem.addTransaction(this);
-            }
         }
     }
 

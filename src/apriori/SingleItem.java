@@ -11,7 +11,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 public class SingleItem extends Item {
 
-    private Object value;
+    protected Object value;
 
     public SingleItem(Object value) {
         this(1);

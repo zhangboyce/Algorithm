@@ -3,3 +3,4 @@ out/*
 .idea/*
 META-INF/*
 target/*
+.DS_Store

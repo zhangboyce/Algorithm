@@ -3,10 +3,7 @@ package apriori;
 import common.utils.AssertUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +14,9 @@ import java.util.Set;
  */
 public class Transactions {
     private Set<Transaction> transactions;
-    private List<SingleItem> allSingleItems;
+
+    // save all single items
+    private static final Map<Object, SingleItem> allSingleItems = new HashMap<Object, SingleItem>();
 
     //minimum support
     private double minsup;
@@ -27,7 +26,6 @@ public class Transactions {
 
     public Transactions(double minsup, double minconf) {
         this.transactions = new HashSet<Transaction>();
-        this.allSingleItems = new ArrayList<SingleItem>();
         this.minsup = minsup;
         this.minconf = minconf;
     }
@@ -53,24 +51,19 @@ public class Transactions {
         return new ArrayList<Transaction>(this.transactions);
     }
 
-    public boolean containsItem(SingleItem singleItem) {
-        return this.allSingleItems.contains(singleItem);
-    }
+    public synchronized SingleItem getItem(Object value) {
+        AssertUtils.assertNotNull(value);
 
-    public void addItem(SingleItem singleItem) {
-        this.allSingleItems.add(singleItem);
-    }
-
-    public int indexOf(SingleItem singleItem) {
-        return this.allSingleItems.indexOf(singleItem);
-    }
-
-    public SingleItem get(int index) {
-        return this.allSingleItems.get(index);
+        SingleItem item = allSingleItems.get(value);
+        if (null == item) {
+            item = new SingleItem(value);
+            allSingleItems.put(value, item);
+        }
+        return item;
     }
 
     public List<SingleItem> allSingleItems() {
-        return new ArrayList<SingleItem>(allSingleItems);
+        return new ArrayList<SingleItem>(allSingleItems.values());
     }
 
     @Override
