@@ -1,10 +1,7 @@
 package algorithm.sort;
 
 import common.utils.ArrayUtils;
-import org.apache.lucene.util.ArrayUtil;
-
 import java.util.Comparator;
-
 /**
  * Created by boyce on 2014/8/14.
  */

@@ -13,6 +13,15 @@ import java.util.regex.Pattern;
 public abstract class LogicExpression {
 
     public abstract boolean matches(String source);
+    public LogicExpression and(LogicExpression le) {
+        return new And(this, le);
+    }
+    public LogicExpression or(LogicExpression le) {
+        return new Or(this, le);
+    }
+    public LogicExpression not() {
+        return new Not(this);
+    }
 
     public static class Primitives extends LogicExpression {
         private String target;

@@ -15,8 +15,8 @@ import java.util.Set;
  */
 public class Item {
     // the item contains transactions, transactions size is the item count.
-    // TODO comment
-    protected Set<Transaction> transactions;
+    // 每个item保存其所在的transaction 的名字集合
+    protected Set<String> ownerTransactionNames;
 
     // item length, example: a :length=1, a,b: length=2
     protected int length;
@@ -24,31 +24,36 @@ public class Item {
     public Item(int length) {
         AssertUtils.assertTrue(length > 0, "item length must be greater than 0.");
 
-        this.transactions = new HashSet<Transaction>();
+        this.ownerTransactionNames = new HashSet<String>();
         this.length = length;
     }
 
-    public void addTransaction(Transaction transaction) {
-        AssertUtils.assertNotNull(transaction, "cannot add a null transaction into the transactions.");
-        this.transactions.add(transaction);
+    public void addTransaction(String transactionName) {
+        AssertUtils.assertNotEmpty(transactionName, "cannot add a empty transaction name into the transactions.");
+        this.ownerTransactionNames.add(transactionName);
     }
 
-    public void addTransactions(Set<Transaction> transactions) {
-        for (Transaction transaction: transactions) {
-            this.addTransaction(transaction);
+    public void addTransactions(Set<String> transactionNames) {
+        for (String name: transactionNames) {
+            this.addTransaction(name);
         }
     }
 
-    // TODO comment
+    //  count(X) = |{t(i)|X属于t(i), t(i)属于ts}|
+    // item 的count 是 item所属于的t的数量
     public int count() {
-        return this.transactions.size();
+        return this.ownerTransactionNames.size();
     }
 
-    public Set<Transaction> transactions() {
-        return new HashSet<Transaction>(transactions);
+    public Set<String> ownerTransactionNames() {
+        return new HashSet<String>(ownerTransactionNames);
     }
 
     public int length() {
         return this.length;
+    }
+
+    public void clear() {
+        this.ownerTransactionNames.clear();
     }
 }

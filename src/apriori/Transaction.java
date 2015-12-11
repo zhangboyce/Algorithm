@@ -26,14 +26,16 @@ public class Transaction {
         this.transactions.addTransaction(this);
     }
 
-    // TODO comment
+    // 添加一个值到当前transaction 中，该根据值去 Transactions 保存的全局 SingleItem 的
+    // HashMap中查找，如果Transactions已经保存了该值对应的 SingleItem, 直接返回该SingleItem
+    // 否者Transactions内部创建一个该值对应的新的SingleItem保存且返回。
     public void addItem(Object value) {
         AssertUtils.assertNotNull(value, "cannot add a item value into the transaction.");
 
         SingleItem singleItem = this.transactions.getItem(value);
         if (!this.singleItems.contains(singleItem)) {
             this.singleItems.add(singleItem);
-            singleItem.addTransaction(this);
+            singleItem.addTransaction(this.name);
         }
     }
 
@@ -52,6 +54,10 @@ public class Transaction {
     @Override
     public int hashCode() {
         return name.hashCode();
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

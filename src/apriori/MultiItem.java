@@ -2,10 +2,7 @@ package apriori;
 
 import common.utils.AssertUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,6 +21,11 @@ public class MultiItem extends Item {
 
         AssertUtils.assertTrue(length > 1, "MultiItem's length must greater than 1.");
         this.values = new ArrayList<SingleItem>(length);
+    }
+
+    public MultiItem(List<SingleItem> items) {
+        this(items.size());
+        this.values.addAll(items);
     }
 
     public void addValue(Object obj) {
@@ -74,6 +76,25 @@ public class MultiItem extends Item {
         }
 
         return sub_equals;
+    }
+
+    // this = [a,b,c,d]
+    // k_1Subset = [[a,b,c],[a,b,d],[a,c,d],[b,c,d]]
+    public List<MultiItem> k_1Subset() {
+        int n = this.values.size();
+        if (n <= 2) return Collections.EMPTY_LIST;
+
+        List<MultiItem> subset = new ArrayList<MultiItem>(n);
+        MultiItem multiItem;
+        List<SingleItem> subSingleItems;
+        for (int i=0; i<n; i++) {
+            subSingleItems = new ArrayList<SingleItem>(this.values);
+            subSingleItems.remove(i);
+            multiItem = new MultiItem(subSingleItems);
+            subset.add(multiItem);
+        }
+
+        return subset;
     }
 
     @Override

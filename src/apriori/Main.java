@@ -49,17 +49,6 @@ public class Main {
         System.out.println(transactions);
         System.out.println(transactions.n());
 
-        Itemset f1 = Itemset.init(transactions);
-        System.out.println(f1);
-
-        Itemset f2 = f1.frequent_gen(transactions);
-        System.out.println(f2);
-
-        Itemset f3 = f2.frequent_gen(transactions);
-        System.out.println(f3);
-
-        System.out.println("-----------------------------------------------");
-
         // for
         Itemset f = Itemset.init(transactions);
         System.out.println(f);

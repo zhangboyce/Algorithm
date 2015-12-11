@@ -20,11 +20,12 @@ public class Calculator {
     private final static String BASE_PATH = "/Users/Boyce/GitProjects/Algorithm/src/apriori/example/";
 
     public static void main(String[] args) {
-        Transactions transactions = new Transactions(0.65, 0.4);
+        Transactions transactions = new Transactions(0.5, 0.4);
 
         File file = new File(BASE_PATH + "data/accidents.dat");
         List<String> lines = FileUtils.readLines(file);
 
+        long start = System.currentTimeMillis();
         Transaction t;
         for (int i=0;i<lines.size(); i++) {
             String line = lines.get(i);
@@ -42,6 +43,8 @@ public class Calculator {
 
         System.out.println(transactions);
         System.out.println(transactions.n());
+        System.out.println("init take: " + (System.currentTimeMillis()-start) + "ms");
+        start = System.currentTimeMillis();
 
         // for
         Itemset f = Itemset.init(transactions);
@@ -51,5 +54,7 @@ public class Calculator {
             f = f.frequent_gen(transactions);
             System.out.println("frequent  set: " + f);
         }
+
+        System.out.println("calculate take: " + (System.currentTimeMillis()-start) + "ms");
     }
 }
