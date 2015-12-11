@@ -28,15 +28,25 @@ public class MultiItem extends Item {
         this.values.addAll(items);
     }
 
-    public void addValue(Object obj) {
-        AssertUtils.assertNotNull(obj, "cannot add a null value into item.");
+    public void addItem(SingleItem singleItem) {
+        AssertUtils.assertNotNull(singleItem, "cannot add a null item into item.");
         AssertUtils.assertTrue(this.values.size() < this.length, "out of the item length.");
-
-        SingleItem singleItem = new SingleItem(obj);
 
         // TODO 保证list里面的元素不重复
         if (!this.values.contains(singleItem))
             this.values.add(singleItem);
+    }
+
+    public void addItems(List<SingleItem> singleItems) {
+        for (SingleItem item: singleItems)
+            this.addItem(item);
+    }
+
+    public void addValue(Object obj) {
+        AssertUtils.assertNotNull(obj, "cannot add a null value into item.");
+        SingleItem singleItem = new SingleItem(obj);
+
+        this.addItem(singleItem);
     }
 
     public void addValues(List<Object> objs) {
@@ -95,6 +105,53 @@ public class MultiItem extends Item {
         }
 
         return subset;
+    }
+
+    // 称以c个单值作为后件的候选规则为 c-候选规则，该方法生成该MultiItem的所有的 1-候选规则
+    public List<AssociationRule> a_1AssociationRules() {
+        List<AssociationRule> rules = new ArrayList<AssociationRule>(this.values.size());
+        for (int i=0; i<this.values.size(); i++) {
+            SingleItem afterItem = this.values.get(i);
+
+            List<SingleItem> frontItem = new ArrayList<SingleItem>(this.length-1);
+            for (int j=0; j<this.values.size(); j++) {
+                if (j != i) {
+                    frontItem.add(this.values.get(j));
+                }
+            }
+            AssociationRule rule = new AssociationRule(frontItem, afterItem);
+            rules.add(rule);
+        }
+        return rules;
+    }
+
+    // 该方法生成后件包含 items 的 (items.size()+1)-候选规则
+    public List<AssociationRule> a_kAssociationRules(List<SingleItem> items) {
+        if (null == items || items.isEmpty() || items.size() >= this.values.size()
+                || !this.values.containsAll(items))
+            return Collections.EMPTY_LIST;
+
+        List<SingleItem> otherItems = new ArrayList<SingleItem>(this.values);
+        otherItems.removeAll(items);
+
+        List<AssociationRule> rules = new ArrayList<AssociationRule>(this.values.size()-items.size());
+        for (int i=0; i<otherItems.size(); i++) {
+
+            List<SingleItem> afterItem = new ArrayList<SingleItem>(items.size()+1);
+            afterItem.addAll(items);
+            afterItem.add(otherItems.get(i));
+
+            List<SingleItem> frontItem = new ArrayList(otherItems.size()-1);
+            for (int j=0; j<otherItems.size(); j++) {
+                if (j != i) {
+                    frontItem.add(otherItems.get(j));
+                }
+            }
+            AssociationRule rule = new AssociationRule(frontItem, afterItem);
+            rules.add(rule);
+        }
+
+        return rules;
     }
 
     @Override

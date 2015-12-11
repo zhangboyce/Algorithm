@@ -2,10 +2,7 @@ package apriori;
 
 import common.utils.AssertUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: Boyce
@@ -14,6 +11,10 @@ import java.util.Set;
  */
 public class Itemset implements Cloneable {
     protected List<Item> items;
+
+    // 生成该k项集的(k-1)项集
+    protected Itemset parentItemset;
+
     // TODO comment
     protected int cardinal_number;
     protected int length;
@@ -48,6 +49,7 @@ public class Itemset implements Cloneable {
     public Itemset frequent_gen(Transactions transactions) {
         int c_cardinal_number = this.cardinal_number + 1;
         Itemset frequentItemset = new Itemset(c_cardinal_number, transactions);
+        frequentItemset.parentItemset = this;
 
         MultiItem multiItem;
         for(int i=0; i<length; i++) {
@@ -133,16 +135,104 @@ public class Itemset implements Cloneable {
     }
 
     public static Itemset init(Transactions transactions) {
-        Itemset candidateItemset = new Itemset(1, transactions);
+        Itemset frequentItemset = new Itemset(1, transactions);
         List<SingleItem> singleItems = transactions.allSingleItems();
-        for (Item item: singleItems) {
-            candidateItemset.addItemIfFrequent(item);
+        for (SingleItem item: singleItems) {
+            frequentItemset.addItemIfFrequent(item);
         }
-        return candidateItemset;
+        return frequentItemset;
     }
 
     public boolean isEmpty() {
         return this.items.isEmpty();
+    }
+
+    // 该频繁项集生成关联规则
+    public List<AssociationRule> rule_gen() {
+
+        if (1 == this.cardinal_number)
+            return Collections.EMPTY_LIST;
+
+        List<AssociationRule> f_rules = new ArrayList<AssociationRule>();
+        List<Item> items = this.items;
+
+        // 计算频繁项集中每个频繁项的关联规则
+        for (int i=0; i<items.size(); i++) {
+            MultiItem multiItem = (MultiItem)items.get(i);
+
+            // TODO 如果一条关联规则的后件为a，那么所有以a的非空子集作为后件的候选规则
+            // TODO 都是关联规则，换句话说，如果以a为后件的候选规则不是关联规则，则
+            // TODO 任何以a为子项的父集作为后件的候选规则都不是关联规则。
+
+            // 获取该频繁项的所有 1-候选规则
+            List<AssociationRule> c1_rules = multiItem.a_1AssociationRules();
+            this.recurse(f_rules, c1_rules, multiItem);
+        }
+        return f_rules;
+    }
+
+    private void recurse(List<AssociationRule> f_rules, List<AssociationRule> c_rules, MultiItem multiItem) {
+        for (AssociationRule rule: c_rules) {
+            if (isFrequentRule(rule, multiItem)) {
+                f_rules.add(rule);
+
+                List<AssociationRule> ck_rules = multiItem.a_kAssociationRules(rule.getAfterItem());
+                this.recurse(f_rules, ck_rules, multiItem);
+            }
+        }
+    }
+
+    private boolean isFrequentRule(AssociationRule rule, MultiItem item) {
+        List<SingleItem> frontItem = rule.getFrontItem();
+
+        int n = frontItem.size();
+        int n_parent = this.cardinal_number - n;
+
+        Itemset n_parent_itemset = this;
+        for (int i=0; i<n_parent; i++)
+            n_parent_itemset = n_parent_itemset.parentItemset;
+
+        int front_count = 0;
+        if (n == 1)
+            front_count = n_parent_itemset.count(frontItem.get(0));
+        else
+            front_count = n_parent_itemset.count(new MultiItem(frontItem));
+
+        double conf = (double)item.count/front_count;
+        boolean isFrequentRule = conf >= this.transactions.minconf();
+
+        if (isFrequentRule) {
+            System.out.println("> add    a rule: " + rule + ", conf=" + item.count + "/" + front_count + " = " + (double)item.count/front_count);
+        }
+        return isFrequentRule;
+    }
+
+    public int count(Item item) {
+        int count = 0;
+        for (int i=0; i<this.items.size(); i++) {
+            Item it = this.items.get(i);
+            if (it.equals(item)) {
+                count = it.count();
+                break;
+            }
+        }
+        return count;
+    }
+
+    public int count(SingleItem item) {
+        int count = 0;
+        for (int i=0; i<this.items.size(); i++) {
+            SingleItem it = (SingleItem)this.items.get(i);
+            if (it.value.equals(((SingleItem)(item.value)).value)) {
+                count = it.count();
+                break;
+            }
+        }
+        return count;
+    }
+
+    public Itemset getParentItemset() {
+        return parentItemset;
     }
 
     @Override

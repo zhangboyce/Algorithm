@@ -1,5 +1,7 @@
 package apriori;
 
+import java.util.*;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Boyce
@@ -9,7 +11,7 @@ package apriori;
  */
 public class Main {
     public static void main(String[] args) {
-        Transactions transactions = new Transactions(0.25, 0.4);
+        Transactions transactions = new Transactions(0.25, 0.7);
 
         Transaction t1 = new Transaction("t1", transactions);
         t1.addItem("a");
@@ -57,5 +59,11 @@ public class Main {
             f = f.frequent_gen(transactions);
             System.out.println(f);
         }
+
+        f = f.parentItemset;
+        System.out.println(f);
+
+        List<AssociationRule> rules = f.rule_gen();
+        System.out.println("rules: " + rules);
     }
 }

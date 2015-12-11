@@ -17,6 +17,7 @@ public class Item {
     // the item contains transactions, transactions size is the item count.
     // 每个item保存其所在的transaction 的名字集合
     protected Set<String> ownerTransactionNames;
+    protected int count;
 
     // item length, example: a :length=1, a,b: length=2
     protected int length;
@@ -42,6 +43,10 @@ public class Item {
     //  count(X) = |{t(i)|X属于t(i), t(i)属于ts}|
     // item 的count 是 item所属于的t的数量
     public int count() {
+        if (this.ownerTransactionNames == null ||
+                this.ownerTransactionNames.isEmpty())
+            return count;
+
         return this.ownerTransactionNames.size();
     }
 
@@ -54,6 +59,8 @@ public class Item {
     }
 
     public void clear() {
+        // 保存下count
+        this.count = this.ownerTransactionNames.size();
         this.ownerTransactionNames.clear();
     }
 }
