@@ -20,7 +20,7 @@ public class Calculator {
     private final static String BASE_PATH = "/Users/Boyce/GitProjects/Algorithm/src/apriori/example/";
 
     public static void main(String[] args) {
-        Transactions transactions = new Transactions(0.9, 0.4);
+        Transactions transactions = new Transactions(0.9, 0.8);
 
         File file = new File(BASE_PATH + "data/accidents.dat");
         List<String> lines = FileUtils.readLines(file);

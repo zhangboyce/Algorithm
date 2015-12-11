@@ -6,20 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: Boyce
  * Date: 29/11/15
  * Time: 12:02
- * To change this template use File | Settings | File Templates.
  */
 public class Transaction {
-    private List<SingleItem> singleItems;
+    private List<Item> items;
     private String name;
     private Transactions transactions;
 
     public Transaction(String name, Transactions transactions) {
         this.name = name;
-        this.singleItems = new ArrayList<SingleItem>();
+        this.items = new ArrayList<Item>();
         this.transactions = transactions;
 
         // TODO comment
@@ -32,10 +30,10 @@ public class Transaction {
     public void addItem(Object value) {
         AssertUtils.assertNotNull(value, "cannot add a item value into the transaction.");
 
-        SingleItem singleItem = this.transactions.getItem(value);
-        if (!this.singleItems.contains(singleItem)) {
-            this.singleItems.add(singleItem);
-            singleItem.addTransaction(this.name);
+        Item item = this.transactions.getItem(value);
+        if (!this.items.contains(item)) {
+            this.items.add(item);
+            item.addTransaction(this.name);
         }
     }
 
@@ -64,7 +62,7 @@ public class Transaction {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Transaction{");
         sb.append("name='").append(name).append('\'');
-        sb.append(", singleItems=").append(singleItems);
+        sb.append(", items=").append(items);
         sb.append('}');
         return sb.toString();
     }

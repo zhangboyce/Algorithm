@@ -51,48 +51,25 @@ public class Itemset implements Cloneable {
         Itemset frequentItemset = new Itemset(c_cardinal_number, transactions);
         frequentItemset.parentItemset = this;
 
-        MultiItem multiItem;
         for(int i=0; i<length; i++) {
             for (int j=i+1; j<length; j++) {
                 Item i1 = items.get(i);
                 Item i2 = items.get(j);
 
-                multiItem = new MultiItem(this.cardinal_number + 1);
-                if (this.cardinal_number == 1) {
-                    SingleItem s1 = (SingleItem)i1;
-                    SingleItem s2 = (SingleItem)i2;
+                if (i1.sub_equals(i2)) {
+                    Item item = Item.merge(i1, i2);
 
-                    // add item values
-                    multiItem.addValue(s1.value());
-                    multiItem.addValue(s2.value());
+                    // TODO 如果 multiItem 的所有(k-1) subset 中有任何subset不是频繁项集，则该 multiItem 不是频繁项集
+                    // TODO 如果某个 subset 不属于当前项集(F(k-1)), 则该 subset 一定不是频繁项集
+
+                    List<Item> k_1Subset = item.k_1Subset();
+                    if (!this.items.containsAll(k_1Subset)) continue;
 
                     // TODO 注意 不是 this.combineTransaction(..)
-                    frequentItemset.combineTransaction(i1, i2, multiItem);
-                } else {
-
-                    MultiItem m1 = (MultiItem)i1;
-                    MultiItem m2 = (MultiItem)i2;
-
-                    // m1 = [a,b,c] m2 = [a,b,d]
-                    // multiItem = [a,b,c,d]
-                    if (m1.sub_equals(m2)) {
-                        // add item values
-                        multiItem.addValues(m1.values());
-                        multiItem.addValue(m2.values().get(m2.length() - 1));
-
-                        // TODO 如果 multiItem 的所有(k-1) subset 中有任何subset不是频繁项集，则该 multiItem 不是频繁项集
-                        // TODO 如果某个 subset 不属于当前项集(F(k-1)), 则该 subset 一定不是频繁项集
-
-                        List<MultiItem> k_1Subset = multiItem.k_1Subset();
-                        if (!this.items.containsAll(k_1Subset)) continue;
-
-                        // TODO 注意 不是 this.combineTransaction(..)
-                        frequentItemset.combineTransaction(i1, i2, multiItem);
-                    }
+                    frequentItemset.combineTransaction(i1, i2, item);
                 }
             }
         }
-
         // clear
         for (Item item: this.items) {
             item.clear();
@@ -102,7 +79,7 @@ public class Itemset implements Cloneable {
 
     // 计算由 i1, i2 生成的项集 multiItem 是不是频繁项集
     // 如果是，将 multiItem 加入当前项 （“当前项" 是调用该方法的实例）
-    private void combineTransaction(Item i1, Item i2, MultiItem multiItem) {
+    private void combineTransaction(Item i1, Item i2, Item item) {
         // add item transactions
         Set<String> t1 = i1.ownerTransactionNames();
         Set<String> t2 = i2.ownerTransactionNames();
@@ -113,9 +90,9 @@ public class Itemset implements Cloneable {
         Set<String> t = new HashSet<String>();
         t.addAll(t1);
         t.retainAll(t2);
-        multiItem.addTransactions(t);
+        item.addTransactions(t);
 
-        this.addItemIfFrequent(multiItem);
+        this.addItemIfFrequent(item);
     }
 
     // 计算item是不是一个当前项集的频繁项，如果是加入当前项
@@ -136,8 +113,8 @@ public class Itemset implements Cloneable {
 
     public static Itemset init(Transactions transactions) {
         Itemset frequentItemset = new Itemset(1, transactions);
-        List<SingleItem> singleItems = transactions.allSingleItems();
-        for (SingleItem item: singleItems) {
+        List<Item> singleItems = transactions.allItems();
+        for (Item item: singleItems) {
             frequentItemset.addItemIfFrequent(item);
         }
         return frequentItemset;
@@ -158,72 +135,55 @@ public class Itemset implements Cloneable {
 
         // 计算频繁项集中每个频繁项的关联规则
         for (int i=0; i<items.size(); i++) {
-            MultiItem multiItem = (MultiItem)items.get(i);
+            Item item = items.get(i);
 
             // TODO 如果一条关联规则的后件为a，那么所有以a的非空子集作为后件的候选规则
             // TODO 都是关联规则，换句话说，如果以a为后件的候选规则不是关联规则，则
             // TODO 任何以a为子项的父集作为后件的候选规则都不是关联规则。
 
             // 获取该频繁项的所有 1-候选规则
-            List<AssociationRule> c1_rules = multiItem.a_1AssociationRules();
-            this.recurse(f_rules, c1_rules, multiItem);
+            List<AssociationRule> c1_rules = item.a_1AssociationRules();
+            this.recurse(f_rules, c1_rules, item);
         }
         return f_rules;
     }
 
-    private void recurse(List<AssociationRule> f_rules, List<AssociationRule> c_rules, MultiItem multiItem) {
+    private void recurse(List<AssociationRule> f_rules, List<AssociationRule> c_rules, Item item) {
         for (AssociationRule rule: c_rules) {
-            if (isFrequentRule(rule, multiItem)) {
+            if (isFrequentRule(rule, item)) {
                 f_rules.add(rule);
 
-                List<AssociationRule> ck_rules = multiItem.a_kAssociationRules(rule.getAfterItem());
-                this.recurse(f_rules, ck_rules, multiItem);
+                List<AssociationRule> ck_rules = item.a_kAssociationRules(rule.getAfterItem());
+                this.recurse(f_rules, ck_rules, item);
             }
         }
     }
 
-    private boolean isFrequentRule(AssociationRule rule, MultiItem item) {
-        List<SingleItem> frontItem = rule.getFrontItem();
+    private boolean isFrequentRule(AssociationRule rule, Item item) {
+        Item frontItem = rule.getFrontItem();
 
-        int n = frontItem.size();
+        int n = frontItem.length();
         int n_parent = this.cardinal_number - n;
 
         Itemset n_parent_itemset = this;
         for (int i=0; i<n_parent; i++)
             n_parent_itemset = n_parent_itemset.parentItemset;
 
-        int front_count = 0;
-        if (n == 1)
-            front_count = n_parent_itemset.count(frontItem.get(0));
-        else
-            front_count = n_parent_itemset.count(new MultiItem(frontItem));
+        int front_count = n_parent_itemset.count(frontItem);
 
-        double conf = (double)item.count/front_count;
+        double conf = (double)item.count()/front_count;
         boolean isFrequentRule = conf >= this.transactions.minconf();
 
         if (isFrequentRule) {
-            System.out.println("> add    a rule: " + rule + ", conf=" + item.count + "/" + front_count + " = " + (double)item.count/front_count);
+            System.out.println("> add    a rule: " + rule + ", conf=" + item.count() + "/" + front_count + " = " + (double)item.count()/front_count);
         }
         return isFrequentRule;
     }
 
     public int count(Item item) {
         int count = 0;
-        for (int i=0; i<this.items.size(); i++) {
-            Item it = this.items.get(i);
+        for (Item it: this.items) {
             if (it.equals(item)) {
-                count = it.count();
-                break;
-            }
-        }
-        return count;
-    }
-
-    public int count(SingleItem item) {
-        int count = 0;
-        for (int i=0; i<this.items.size(); i++) {
-            SingleItem it = (SingleItem)this.items.get(i);
-            if (it.value.equals(((SingleItem)(item.value)).value)) {
                 count = it.count();
                 break;
             }

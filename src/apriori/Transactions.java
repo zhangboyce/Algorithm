@@ -15,7 +15,7 @@ public class Transactions {
     private Set<Transaction> transactions;
 
     // save all single items
-    private static final Map<Object, SingleItem> allSingleItems = new HashMap<Object, SingleItem>();
+    private static final Map<Object, Item> allItems = new HashMap<Object, Item>();
 
     //minimum support
     private double minsup;
@@ -50,26 +50,26 @@ public class Transactions {
         return new ArrayList<Transaction>(this.transactions);
     }
 
-    public synchronized SingleItem getItem(Object value) {
+    public synchronized Item getItem(Object value) {
         AssertUtils.assertNotNull(value);
 
-        SingleItem item = allSingleItems.get(value);
+        Item item = allItems.get(value);
         if (null == item) {
-            item = new SingleItem(value);
-            allSingleItems.put(value, item);
+            item = new Item(value);
+            allItems.put(value, item);
         }
         return item;
     }
 
-    public List<SingleItem> allSingleItems() {
-        return new ArrayList<SingleItem>(allSingleItems.values());
+    public List<Item> allItems() {
+        return new ArrayList<Item>(allItems.values());
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Transactions{");
         sb.append("transactions=").append(transactions);
-        sb.append(", allSingleItems=").append(allSingleItems);
+        sb.append(", allItems=").append(allItems);
         sb.append(", minsup=").append(minsup);
         sb.append(", minconf=").append(minconf);
         sb.append('}');

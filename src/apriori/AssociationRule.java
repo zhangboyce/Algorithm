@@ -2,10 +2,6 @@ package apriori;
 
 import common.utils.AssertUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * User: Boyce
  * Date: 11/12/15
@@ -15,41 +11,23 @@ import java.util.List;
 public class AssociationRule {
 
     // 关联规则前件
-    private List<SingleItem> frontItem;
+    private Item frontItem;
     // 关联规则后建
-    private List<SingleItem> afterItem;
+    private Item afterItem;
 
-    public AssociationRule(List<SingleItem> frontItem, List<SingleItem> afterItem) {
-        AssertUtils.assertNotEmpty(frontItem);
-        AssertUtils.assertNotEmpty(afterItem);
+    public AssociationRule(Item frontItem, Item afterItem) {
+        AssertUtils.assertNotNull(frontItem, "");
+        AssertUtils.assertNotNull(afterItem, "");
 
-        this.frontItem = new ArrayList<SingleItem>(frontItem);
-        this.afterItem = new ArrayList<SingleItem>(afterItem);
+        this.frontItem = frontItem;
+        this.afterItem = afterItem;
     }
 
-    public AssociationRule(SingleItem frontItem, List<SingleItem> afterItem) {
-        this(asList(frontItem), afterItem);
-    }
-
-    public AssociationRule(List<SingleItem> frontItem, SingleItem afterItem) {
-        this(frontItem, asList(afterItem));
-    }
-
-    public AssociationRule(SingleItem frontItem, SingleItem afterItem) {
-        this(asList(frontItem), asList(afterItem));
-    }
-
-    private static List<SingleItem> asList(SingleItem singleItem) {
-        List<SingleItem> list = new ArrayList<SingleItem>();
-        list.add(singleItem);
-        return list;
-    }
-
-    public List<SingleItem> getFrontItem() {
+    public Item getFrontItem() {
         return frontItem;
     }
 
-    public List<SingleItem> getAfterItem() {
+    public Item getAfterItem() {
         return afterItem;
     }
 
