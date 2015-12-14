@@ -2,6 +2,7 @@ package expression;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 
 /**
@@ -29,9 +30,9 @@ public class LogicExpressionParser {
         return null;
     }
 
-    private LogicExpression calculatePostfixExpression() {
-        List<String> postfixExpression = new ArrayList<String>();
-        Stack<Character> operators = new Stack<Character>();
+    private LogicExpression calculatePostfixExpression() throws ParseException {
+        List<String> postfixExpression = new ArrayList();
+        Stack<Character> operators = new Stack();
         while(!reader.isEmpty()) {
             String str = reader.consumeToAny(operators());
             if (!"".equals(str)) {
@@ -68,7 +69,7 @@ public class LogicExpressionParser {
             postfixExpression.add(String.valueOf(operators.pop()));
 
         //
-        Stack<LogicExpression> resultStack = new Stack<LogicExpression>();
+        Stack<LogicExpression> resultStack = new Stack();
         for (String s: postfixExpression) {
             if (isOperator(s)) {
                 LogicExpression le1 = resultStack.pop();
@@ -85,12 +86,15 @@ public class LogicExpressionParser {
             } else
                 resultStack.push(new LogicExpression.Primitives(s));
         }
+        if (resultStack.size() != 1)
+            throw new ParseException("logic expression is error. " + reader.asString());
+
         LogicExpression expression = resultStack.pop();
         return expression;
     }
 
     private static int compareOperator(char c1, char c2) {
-       return "|&^".indexOf(c1) - "|&^".indexOf(c2);
+        return "|&^".indexOf(c1) - "|&^".indexOf(c2);
     }
 
     private static char[] operators() {
@@ -183,10 +187,21 @@ public class LogicExpressionParser {
             }
             return pos > start ? new String(input, start, pos-start) : "";
         }
+
+        String asString() {
+            return new String(input);
+        }
+    }
+
+    static class ParseException extends Exception {
+        ParseException(String message) {
+            super(message);
+        }
+
     }
 
     public static void main(String[] args) {
-        String str = "万里|^长城";
+        String str = "((万里|长城)";
         LogicExpression expression = LogicExpressionParser.parse(str);
         System.out.println(expression);
         System.out.println(expression.matches("万里长城万里长"));
