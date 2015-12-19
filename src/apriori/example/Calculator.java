@@ -17,13 +17,10 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class Calculator {
-    private final static String BASE_PATH = "/Users/Boyce/GitProjects/Algorithm/src/apriori/example/";
-
     public static void main(String[] args) {
         Transactions transactions = new Transactions(0.9, 0.8);
 
-        File file = new File(BASE_PATH + "data/accidents.dat");
-        List<String> lines = FileUtils.readLines(file);
+        List<String> lines = FileUtils.readLines(Calculator.class.getResourceAsStream("data/chess.dat"));
 
         long start = System.currentTimeMillis();
         Transaction t;

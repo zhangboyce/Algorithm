@@ -13,21 +13,17 @@ import java.util.*;
 public class Pair<N,V> {
     private N name;
     private V value;
-    private Set<Example> examples;
+    private List<Example> examples;
 
     public Pair(N name, V value) {
         this.name = name;
         this.value = value;
-        this.examples = new HashSet<Example>();
+        this.examples = new ArrayList<Example>();
     }
 
     public void addExample(Example example) {
         AssertUtils.assertNotNull(example, "cannot add a null to pair's examples.");
         this.examples.add(example);
-    }
-
-    public int countExample() {
-        return this.examples.size();
     }
 
     public N getName() {
@@ -38,7 +34,7 @@ public class Pair<N,V> {
         return value;
     }
 
-    public Set<Example> getExamples() {
+    public List<Example> getExamples() {
         return examples;
     }
 
@@ -73,8 +69,16 @@ public class Pair<N,V> {
      * 训练数据属性
      */
     public static class Attribute extends Pair<String, Object> {
+
         public Attribute(String name, Object value) {
             super(name, value);
+        }
+
+        public boolean isSameAttribute(Attribute attribute) {
+            if (null == attribute || null == attribute.getName())
+                return false;
+
+            return attribute.getName().equals(this.getName());
         }
     }
 
@@ -83,7 +87,7 @@ public class Pair<N,V> {
      */
     public static class Classification extends Pair<String, Object> {
         public Classification(Object value) {
-            super("classification", value);
+            super("cf", value);
         }
     }
 }

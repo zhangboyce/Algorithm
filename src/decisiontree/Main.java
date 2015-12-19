@@ -1,5 +1,10 @@
 package decisiontree;
 
+import java.util.List;
+import common.utils.FileUtils;
+
+import java.io.File;
+
 /**
  * User: Boyce
  * Date: 16/12/15
@@ -7,37 +12,26 @@ package decisiontree;
  */
 public class Main {
     public static void main(String[] args) {
-        String header = "age,hasJob,ownHouse,creditRating,class";
-        String r1 = "young,false,false,fair,no";
-        String r2 = "young,false,false,good,no";
-        String r3 = "young,true,false,good,yes";
-        String r4 = "young,true,true,fair,yes";
-        String r5 = "young,false,false,fair,no";
-        String r6 = "middle,false,false,fair,no";
-        String r7 = "middle,false,false,good,no";
-        String r8 = "middle,true,true,good,yes";
-        String r9 = "middle,false,true,excellent,yes";
-        String r10 = "middle,false,true,excellent,yes";
-        String r11 = "old,false,true,excellent,yes";
-        String r12 = "old,false,true,good,yes";
-        String r13 = "old,true,false,good,yes";
-        String r14 = "old,true,false,excellent,yes";
-        String r15 = "old,false,false,fair,no";
 
-        String[] rs = {r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15};
-        String[] headers = header.split(",");
+        List<String> lines = FileUtils.readLines(Main.class.getResourceAsStream("examples.csv"));
+        String[] headers = lines.get(0).split(",");
         int s = headers.length;
-
-        for(int i=0; i<rs.length; i++) {
-            String[] values = rs[i].split(",");
-            Example e = new Example(i+"", values[s-1]);
+        Examples examples = new Examples();
+        for(int i=1; i<lines.size(); i++) {
+            String[] values = lines.get(i).split(",");
+            Example e = new Example(i+"", values[s-1].trim(), examples);
             for (int j=0;j<s-1;j++) {
-                e.addAttribute(headers[j], values[j]);
+                e.addAttribute(headers[j].trim(), values[j].trim());
             }
-            Examples.addExample(e);
+            examples.addExample(e);
         }
 
-        System.out.println(Examples.asString());
-        System.out.println(Examples.entropy());
+        System.out.println(examples);
+        System.out.println(examples.entropy());
+
+        DecisionTree decisionTree = new DecisionTree(examples);
+        decisionTree.build();
+
+        System.out.println(decisionTree);
     }
 }

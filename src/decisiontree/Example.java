@@ -14,19 +14,21 @@ public class Example {
     private String id;
     private Pair.Classification cf;
     private List<Pair.Attribute> attributes;
+    private Examples examples;
 
-    public Example(String id, Object cf) {
+    public Example(String id, Object cf, Examples examples) {
         AssertUtils.assertNotNull(cf, "cannot construct a example with null classification.");
         this.attributes = new ArrayList<Pair.Attribute>();
         this.id = id;
+        this.examples = examples;
 
         // 根据Example的cf值获取所属类别实例并让this.cf的引用指向该实例
-        this.cf = Examples.addAndGetClassification(cf);
+        this.cf = this.examples.addAndGetClassification(cf);
         this.cf.addExample(this);
     }
 
     public void addAttribute(String name, Object value) {
-        Pair.Attribute attribute = Examples.addAndGetAttribute(name, value);
+        Pair.Attribute attribute = this.examples.addAndGetAttribute(name, value);
         this.attributes.add(attribute);
         attribute.addExample(this);
     }
@@ -50,6 +52,10 @@ public class Example {
 
     public Pair.Classification getCf() {
         return cf;
+    }
+
+    public List<Pair.Attribute> getAttributes() {
+        return attributes;
     }
 
     @Override

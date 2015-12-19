@@ -1,8 +1,6 @@
 package common.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +20,29 @@ public class FileUtils {
         List<String> lines = new ArrayList<String>();
         try {
             bufferedReader = new BufferedReader(new FileReader(file));
+            String word;
+            while ((word = bufferedReader.readLine()) != null){
+                lines.add(word);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } finally {
+            try{
+                if (bufferedReader != null)
+                    bufferedReader.close();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        return lines;
+    }
+
+    public static List<String> readLines(InputStream stream){
+        BufferedReader bufferedReader = null;
+        List<String> lines = new ArrayList<String>();
+        try {
+            bufferedReader = new BufferedReader(new InputStreamReader(stream));
             String word;
             while ((word = bufferedReader.readLine()) != null){
                 lines.add(word);
