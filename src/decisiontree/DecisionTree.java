@@ -66,6 +66,7 @@ public class DecisionTree {
     }
 
     // 使用指定的属性集划分指定的训练集，返回信息熵增益最大的属性作为划分。
+    // 信息增益优先选择有较多可能取值的属性。
     private String getMaxGainAttributeName(Map<String, List<Pair.Attribute>> attributeMap, List<Example> exampleList) {
         // 计算指定训练集的分类信息熵
         double entropy = this.examples.entropy(exampleList);
@@ -85,6 +86,10 @@ public class DecisionTree {
             System.out.println("gain(D,"+key+") = " + entropy + "-" + entropyAi +" = " + (entropyGain));
         }
         System.out.println("maxGainAttributeName: " + maxGainAttributeName);
+
+        // TODO 如果maxGain增益小于一个设定的阀值，算法应该在该分支上停止，并选取子集中最频繁的类别作为
+        // TODO 该分支的类别
+
         return maxGainAttributeName;
     }
 
@@ -152,26 +157,6 @@ public class DecisionTree {
         }
 
         return cfs;
-    }
-
-    private static Map<String, Set<Pair.Attribute>> getAttributes(List<Example> exampleList) {
-        if (CollectionUtils.isEmpty(exampleList))
-            return Collections.EMPTY_MAP;
-
-        Map<String, Set<Pair.Attribute>> attributes = new HashMap<String, Set<Pair.Attribute>>();
-        for (Example example: exampleList) {
-            List<Pair.Attribute> attributeList = example.getAttributes();
-            for (Pair.Attribute attribute: attributeList) {
-                String name = attribute.getName();
-                Set<Pair.Attribute> set = attributes.get(name);
-                if (set == null) {
-                    set = new HashSet<Pair.Attribute>();
-                    attributes.put(name, set);
-                }
-                set.add(attribute);
-            }
-        }
-        return attributes;
     }
 
     @Override
