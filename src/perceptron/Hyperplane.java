@@ -2,7 +2,6 @@ package perceptron;
 
 import common.utils.AssertUtils;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +54,7 @@ public class Hyperplane {
      * @param y x的标记分类
      * @return
      */
-    public boolean learn(double[] x, int y) {
+    private boolean isCorrect(double[] x, int y) {
         if (null == x || x.length != this.dimensional)
             throw new IllegalArgumentException("");
 
@@ -64,23 +63,23 @@ public class Hyperplane {
             wx += w[i]*x[i];
         }
         double result = y*(wx + b);
-        if (result <= 0) {
-            this.update(x, y);
-            this.learn(x,y);
-        }
-
-        return result <= 0;
+        return result > 0;
     }
 
     public void train(Map<double[], Integer> trainingMap) {
         if (null == trainingMap || trainingMap.isEmpty())
             return;
 
-        for (Map.Entry<double[], Integer> entry: trainingMap.entrySet()) {
-            boolean correct = this.learn(entry.getKey(), entry.getValue());
-            while (!correct) {
-                this.update(entry.getKey(), entry.getValue());
-                correct = this.learn(entry.getKey(), entry.getValue());
+        int updateCount = 1;
+        while (updateCount != 0) {
+            updateCount = 0;
+            for (Map.Entry<double[], Integer> entry: trainingMap.entrySet()) {
+                boolean correct = this.isCorrect(entry.getKey(), entry.getValue());
+                while (!correct) {
+                    updateCount ++ ;
+                    this.update(entry.getKey(), entry.getValue());
+                    correct = this.isCorrect(entry.getKey(), entry.getValue());
+                }
             }
         }
     }
@@ -109,19 +108,18 @@ public class Hyperplane {
     }
 
     public static void main(String[] args) {
-        Hyperplane hyperplane = new Hyperplane(2, 1);
-        System.out.println(hyperplane);
+        Hyperplane hyperplane = new Hyperplane(5, 1);
 
-        double[] x1 = {1,1};
-        double[] x2 = {1,2};
-        double[] x3 = {1,3};
-        double[] x4 = {2,2};
-        double[] x5 = {2,3};
+        double[] x1 = {1,1,2,3,4};
+        double[] x2 = {1,2,3,4,1};
+        double[] x3 = {1,3,5,4,3};
+        double[] x4 = {2,2,7,4,2};
+        double[] x5 = {2,3,8,4,2};
 
-        double[] x6 = {3,1};
-        double[] x7 = {4,1};
-        double[] x8 = {4,2};
-        double[] x9 = {4,3};
+        double[] x6 = {3,1,1,0,4};
+        double[] x7 = {4,1,3,1,4};
+        double[] x8 = {4,2,6,8,0};
+        double[] x9 = {4,3,4,6,20};
 
         Map<double[], Integer> trainingMap = new HashMap<double[], Integer>();
         trainingMap.put(x1, 1);
@@ -135,9 +133,7 @@ public class Hyperplane {
         trainingMap.put(x8, -1);
         trainingMap.put(x9, -1);
 
-        for (Map.Entry<double[], Integer> entry: trainingMap.entrySet()) {
-
-        }
+        hyperplane.train(trainingMap);
 
         System.out.println(hyperplane);
     }
