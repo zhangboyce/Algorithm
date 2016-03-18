@@ -41,7 +41,7 @@ public class Questions1 {
         });
 
         System.out.println("top10 totalComment:");
-        for (int i=0; i<10; i++) {
+        for (int i=0; i<15; i++) {
             Product product = products.get(i);
             System.out.println(product.id + ", " + product.name + ", " + product.totalComment);
         }
@@ -54,7 +54,7 @@ public class Questions1 {
         });
 
         System.out.println("top10 totalSale:");
-        for (int i=0; i<10; i++) {
+        for (int i=0; i<15; i++) {
             Product product = products.get(i);
             System.out.println(product.id + ", " + product.name + ", " + product.totalSale);
         }
@@ -67,7 +67,7 @@ public class Questions1 {
         });
 
         System.out.println("top10 totalRevenue:");
-        for (int i=0; i<10; i++) {
+        for (int i=0; i<15; i++) {
             Product product = products.get(i);
             System.out.println(product.id + ", " + product.name + ", " + product.totalRevenue);
         }

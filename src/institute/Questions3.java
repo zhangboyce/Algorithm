@@ -20,7 +20,6 @@ public class Questions3 {
         List<Map<String, Double>> results = new ArrayList<Map<String, Double>>();
         for (int d=0; d<9; d++) {
             Map<String, Double> result = calculate(d);
-            System.out.println(result);
 
             if (null == minErrorRateResult || result.get("errorRate") <= minErrorRateResult.get("errorRate")) {
                 minErrorRateResult = result;
@@ -29,7 +28,7 @@ public class Questions3 {
             results.add(result);
         }
 
-        System.out.println("best of best" + minErrorRateResult);
+        System.out.println("best of best" + minErrorRateResult + ", i=" + minErrorRateResultColumn);
         test(minErrorRateResult, minErrorRateResultColumn);
 
         test(results);
