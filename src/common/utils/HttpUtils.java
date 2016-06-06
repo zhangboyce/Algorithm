@@ -1,6 +1,5 @@
 package common.utils;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.http.*;
 import org.apache.http.client.entity.DeflateDecompressingEntity;
 import org.apache.http.client.entity.GzipDecompressingEntity;
@@ -35,7 +34,6 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * User: Boyce
@@ -189,7 +187,7 @@ public class HttpUtils {
             if (params != null) {
                 List<NameValuePair> pairs = new ArrayList();
                 for (Map.Entry<String, Object> entry : params.entrySet()) {
-                    pairs.add(new BasicNameValuePair(entry.getKey(), Objects.toString(entry.getValue(), "")));
+                    pairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
                 }
                 UrlEncodedFormEntity entity = new UrlEncodedFormEntity(pairs, Charset.forName(charset != null ? charset : "UTF-8"));
                 httpPost.setEntity(entity);
@@ -252,7 +250,7 @@ public class HttpUtils {
             if (index < 0 || index == proxy.length() - 1) return null;
             Proxy p = new Proxy();
             p.host = proxy.substring(0, index);
-            p.port = NumberUtils.toInt(proxy.substring(index + 1));
+            p.port = Integer.parseInt(proxy.substring(index + 1));
 
             return p;
         }
@@ -271,13 +269,12 @@ public class HttpUtils {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Proxy proxy = (Proxy) o;
-            return Objects.equals(port, proxy.port) &&
-                    Objects.equals(host, proxy.host);
+            return port == proxy.port && host.equals(proxy.host);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(host, port);
+            return host.hashCode() + port;
         }
 
         public String toString() {
