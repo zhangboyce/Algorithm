@@ -9,7 +9,6 @@ import java.util.Comparator;
  */
 public class InsertDichotomySorting<T extends Comparable> extends AbstractSorting<T> {
 
-    @Override
     public void sort(T[] target, Comparator<T> comparator) {
 
         for (int i = 0; i < target.length; i++) {
