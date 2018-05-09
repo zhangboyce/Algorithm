@@ -41,6 +41,16 @@ public class Arrays {
         return target;
     }
 
+    public static int sum(Integer[] a, int left, int right) {
+        if (left == right) return a[left];
+
+        int center = (left + right) / 2;
+        int leftSum = sum(a, left, center);
+        int rightSUm = sum(a, center + 1, right);
+
+        return leftSum + rightSUm;
+    }
+
     public static void main(String[] args) {
         Integer[] target = {2, 4, 5, 3, 6, 1, 8, 9, 0, 7};
         int max = Arrays.max(target, new Comparator<Integer>() {
@@ -53,5 +63,6 @@ public class Arrays {
         System.out.println("max = [" + max + "]");
         System.out.println("average = [" + average(target) + "]");
         System.out.println("forward(1) = [" + ArrayUtils.toString(forward(target)) + "]");
+        System.out.println("sum = [" + sum(target, 0, target.length - 1) + "]");
     }
 }
