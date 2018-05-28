@@ -36,5 +36,4 @@
     return (rear - front + data.length) % data.length;
 ```
 
-#### 三、解答题（共2题。共20分）
-答案: 略。
+#### 三、解答题（共2题。共20分）答案: 略。
