@@ -14,7 +14,7 @@ public abstract class AbstractGraph<T> implements IGraph<T> {
     protected Map<T, Vertex<T>> vertexs;
 
     public AbstractGraph() {
-        vertexs = new HashMap<T, Vertex<T>>();
+        vertexs = new HashMap<>();
     }
 
     @Override

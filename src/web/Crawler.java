@@ -16,9 +16,10 @@ import java.io.IOException;
 public class Crawler {
     public static void main(String[] args) throws Exception {
         CrawlerTask task;
-        String baseUrl = "http://cl.to1024.club/thread0806.php?fid=4&search=&page=";
-        for (int i=1; i<2; i++) {
+        String baseUrl = "https://freesound.org/people/AKUSTIKA/sounds/?page=";
+        for (int i=1; i<12; i++) {
             String url = baseUrl + i;
+            System.out.println(i + ": " + url);
             task = new CrawlerTask(url);
             String body = task.body();
 
@@ -28,14 +29,16 @@ public class Crawler {
 
     public static void handle(String body) {
         Document document = asJsoup(body);
-        Elements elements = document.select("#ajaxtable").select("tr.tr3")
-                .select("td").get(1).select("a");;
+//        System.out.println(body);
+        Elements elements = document.select(".sample_player_small");
+        System.out.println(elements.size());
         for (Element element: elements) {
-            String name = element.text();
-            if (name.contains("剧情片") || name.contains("中文字幕")) {
-                System.out.println("http://cl.to1024.club/" + element.attr("href"));
-                System.out.println(name);
-            }
+            String id = element.attr("id");
+
+            Elements a = element.select(".sound_filename").select("a.title");
+            String href = a.attr("href");
+            String title = a.attr("title");
+            System.out.println( "https://freesound.org" + href + "" + "download/" + id +"__akustika__" + title);
         }
     }
 

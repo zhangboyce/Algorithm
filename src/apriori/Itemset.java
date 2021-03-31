@@ -17,7 +17,7 @@ public class Itemset implements Cloneable {
 
     // TODO comment
     protected int cardinal_number;
-    protected int length;
+    protected int   length;
 
     // 保存一个Transactions 的引用
     protected Transactions transactions;
